@@ -894,6 +894,7 @@
       }
 
       .chat-message.notice {
+        display: block;
         width: 100%;
         max-width: 100%;
         text-align: left;
@@ -911,6 +912,7 @@
         color: var(--graphite-700);
         border: 1px solid rgba(31, 74, 124, 0.12);
         align-self: flex-start;
+        margin-right: auto;
       }
 
       .chat-message.patient {
@@ -918,6 +920,7 @@
         color: var(--graphite-700);
         border: 1px solid rgba(13, 27, 42, 0.12);
         align-self: flex-end;
+        margin-left: auto;
       }
 
       .typing-indicator {
@@ -2118,7 +2121,8 @@
 
       const appendMessage = (role, text) => {
         const bubble = document.createElement("div");
-        bubble.className = `chat-message ${role}`;
+        const safeRole = role || "system";
+        bubble.className = `chat-message ${safeRole}`;
         bubble.textContent = text;
         chatWindow.appendChild(bubble);
         chatWindow.scrollTop = chatWindow.scrollHeight;
