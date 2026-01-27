@@ -1,0 +1,422 @@
+import "dotenv/config";
+import express from "express";
+import http from "http";
+import path from "path";
+import { fileURLToPath } from "url";
+import { WebSocketServer } from "ws";
+import crypto from "crypto";
+import { createClient } from "@supabase/supabase-js";
+import OpenAI from "openai";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocketServer({ noServer: true });
+
+const PORT = process.env.PORT || 3000;
+
+const sessions = new Map();
+const wsClients = new Map();
+
+const supabaseUrl = process.env.SUPABASE_URL || "";
+const supabaseKey = process.env.SUPABASE_ANON_KEY || "";
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
+const openaiKey = process.env.OPENAI_API_KEY || "";
+const openaiChatModel = process.env.OPENAI_MODEL_CHAT || "gpt-4o-mini";
+const openaiAnalysisModel = process.env.OPENAI_MODEL_ANALYSIS || "gpt-4o-mini";
+const openai = openaiKey ? new OpenAI({ apiKey: openaiKey }) : null;
+
+app.use(express.json({ limit: "32kb" }));
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+app.use(express.static(__dirname));
+
+const rateBuckets = new Map();
+const RATE_LIMIT = { windowMs: 15 * 60 * 1000, max: 120 };
+
+const rateLimit = (req, res, next) => {
+  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress;
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip) || { count: 0, resetAt: now + RATE_LIMIT.windowMs };
+  if (now > bucket.resetAt) {
+    bucket.count = 0;
+    bucket.resetAt = now + RATE_LIMIT.windowMs;
+  }
+  bucket.count += 1;
+  rateBuckets.set(ip, bucket);
+  if (bucket.count > RATE_LIMIT.max) {
+    return res.status(429).json({ error: "Rate limit exceeded" });
+  }
+  next();
+};
+
+const sanitize = (value) =>
+  String(value || "")
+    .replace(/[<>]/g, "")
+    .trim()
+    .slice(0, 200);
+
+const sanitizeForModel = (value) =>
+  String(value || "")
+    .replace(/[<>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 400);
+
+const createSession = () => {
+  const id = crypto.randomUUID();
+  const now = Date.now();
+  const session = {
+    id,
+    createdAt: now,
+    updatedAt: now,
+    step: "greeting",
+    captured: {},
+    triage: {
+      priority: "Baja",
+      label: "Consulta",
+      suggested_action: "Automatico",
+    },
+    timeline: [
+      {
+        type: "session",
+        label: "Sesion iniciada",
+        ts: now,
+      },
+    ],
+    messages: [],
+    assistantCount: 0,
+  };
+  sessions.set(id, session);
+  return session;
+};
+
+const updateSupabase = async (session) => {
+  if (!supabase) return;
+  try {
+    await supabase.from("sessions").upsert({
+      session_id: session.id,
+      step: session.step,
+      captured: session.captured,
+      triage: session.triage,
+      timeline: session.timeline,
+      updated_at: new Date(session.updatedAt).toISOString(),
+    });
+  } catch (error) {
+    console.error("Supabase error", error.message);
+  }
+};
+
+const emitEvent = (sessionId, event, data) => {
+  const clients = wsClients.get(sessionId);
+  if (!clients) return;
+  const payload = JSON.stringify({ event, data });
+  clients.forEach((client) => {
+    if (client.readyState === 1) {
+      client.send(payload);
+    }
+  });
+};
+
+const addTimeline = (session, type, label) => {
+  const event = { type, label, ts: Date.now() };
+  session.timeline.push(event);
+  emitEvent(session.id, "timeline.event", event);
+};
+
+const fallbackTriage = (text) => {
+  const normalized = text.toLowerCase();
+  const high = ["urgente", "dolor", "fuerte", "hoy", "ahora", "necesito", "fractura"];
+  const medium = ["precio", "valores", "costo", "horario", "disponibilidad", "consulta", "cotizacion"];
+  if (high.some((word) => normalized.includes(word))) {
+    return { priority: "Alta", label: "Potencial cita", suggested_action: "Derivar a equipo" };
+  }
+  if (medium.some((word) => normalized.includes(word))) {
+    return { priority: "Media", label: "Potencial cita", suggested_action: "Derivar a equipo" };
+  }
+  return { priority: "Baja", label: "Consulta", suggested_action: "Automatico" };
+};
+
+const withTimeout = async (promise, timeoutMs) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const result = await promise(controller.signal);
+    clearTimeout(timeout);
+    return result;
+  } catch (error) {
+    clearTimeout(timeout);
+    throw error;
+  }
+};
+
+const getChatReply = async ({ session, message }) => {
+  if (session.step === "done") {
+    return "La clinica continuara el proceso por su canal habitual. Si desea seguir revisando el flujo, puede recuperar el control operativo en una demo.";
+  }
+  if (!openai) {
+    return "Gracias. Puede contarme el motivo de su consulta?";
+  }
+  const history = session.messages.slice(-8).map((msg) => ({
+    role: msg.role === "patient" ? "user" : "assistant",
+    content: msg.text,
+  }));
+  const systemPrompt =
+    "Eres la recepcion digital de una clinica en Chile. Responde con tono profesional, sobrio y clinico. " +
+    "Haz preguntas breves y claras. No menciones tecnologia. No prometas agendamiento real. " +
+    "Si falta un dato (motivo, nombre, ciudad, preferencia horaria), pide solo uno a la vez.";
+
+  const userPrompt = message
+    ? sanitizeForModel(message)
+    : "Inicia la conversacion con un saludo profesional y pregunta el motivo de la consulta.";
+
+  const response = await withTimeout(
+    (signal) =>
+      openai.chat.completions.create(
+        {
+          model: openaiChatModel,
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...history,
+            { role: "user", content: userPrompt },
+          ],
+          temperature: 0.2,
+          max_tokens: 180,
+        },
+        { signal }
+      ),
+    8000
+  );
+
+  return response.choices?.[0]?.message?.content?.trim() || "Puede contarme un poco mas?";
+};
+
+const getAnalysis = async ({ session, message }) => {
+  if (!openai) {
+    return null;
+  }
+
+  const systemPrompt =
+    "Analiza la conversacion clinica y devuelve JSON estricto. " +
+    "Extrae: name, reason, city, preferred_time. " +
+    "Clasifica: type (Consulta|Potencial cita), priority (Alta|Media|Baja), suggested_action (Automatico|Derivar a equipo). " +
+    "No inventes datos. Si no existe, usa null.";
+
+  const context = {
+    last_message: sanitizeForModel(message),
+    captured: session.captured,
+  };
+
+  const response = await withTimeout(
+    (signal) =>
+      openai.chat.completions.create(
+        {
+          model: openaiAnalysisModel,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: JSON.stringify(context) },
+          ],
+          temperature: 0,
+          max_tokens: 220,
+          response_format: { type: "json_object" },
+        },
+        { signal }
+      ),
+    8000
+  );
+
+  const content = response.choices?.[0]?.message?.content || "{}";
+  try {
+    return JSON.parse(content);
+  } catch (error) {
+    return null;
+  }
+};
+
+const nextReply = async (session, message) => {
+  const input = sanitize(message);
+  session.updatedAt = Date.now();
+
+  if (session.step === "done") {
+    return await getChatReply({ session, message: "" });
+  }
+
+  if (session.step === "greeting") {
+    session.step = "reason";
+    addTimeline(session, "system", "Saludo enviado");
+    return await getChatReply({ session, message: "" });
+  }
+
+  if (input) {
+    addTimeline(session, "patient", "Mensaje recibido");
+  }
+
+  const analysis = input ? await getAnalysis({ session, message: input }) : null;
+  if (analysis) {
+    const updates = {};
+    if (analysis.name) {
+      session.captured.name = analysis.name;
+      updates.name = analysis.name;
+      addTimeline(session, "patient", "Nombre detectado");
+    }
+    if (analysis.reason) {
+      session.captured.reason = analysis.reason;
+      updates.reason = analysis.reason;
+      addTimeline(session, "patient", "Motivo detectado");
+    }
+    if (analysis.city) {
+      session.captured.city = analysis.city;
+      updates.city = analysis.city;
+      addTimeline(session, "patient", "Ciudad detectada");
+    }
+    if (analysis.preferred_time) {
+      session.captured.preferred_time = analysis.preferred_time;
+      updates.preferred_time = analysis.preferred_time;
+      addTimeline(session, "patient", "Preferencia registrada");
+    }
+    if (Object.keys(updates).length) {
+      emitEvent(session.id, "patient.updated", updates);
+    }
+
+    const triage = {
+      priority: analysis.priority || session.triage.priority,
+      label: analysis.type || session.triage.label,
+      suggested_action: analysis.suggested_action || session.triage.suggested_action,
+    };
+    session.triage = triage;
+    emitEvent(session.id, "triage.updated", triage);
+  } else if (input) {
+    session.triage = fallbackTriage(input);
+    emitEvent(session.id, "triage.updated", session.triage);
+  }
+
+  const hasAll =
+    session.captured.name &&
+    session.captured.reason &&
+    session.captured.city &&
+    session.captured.preferred_time;
+
+  if (hasAll) {
+    session.step = "done";
+    addTimeline(session, "system", "Datos completos");
+    return "Gracias. La clinica continuara el proceso por su canal habitual. Si desea seguir revisando el flujo, puede recuperar el control operativo en una demo.";
+  }
+
+  const reply = await getChatReply({ session, message: input });
+  return reply || "Podria contarme un poco mas?";
+};
+
+app.post("/api/sessions", rateLimit, async (req, res) => {
+  const session = createSession();
+  await updateSupabase(session);
+  res.json({ session_id: session.id });
+});
+
+app.post("/api/chat", rateLimit, async (req, res) => {
+  const sessionId = sanitize(req.body.session_id);
+  const message = sanitize(req.body.message || "");
+  const session = sessions.get(sessionId);
+  if (!session) {
+    return res.status(404).json({ error: "Session not found" });
+  }
+  if (message) {
+    session.messages.push({ role: "patient", text: message, ts: Date.now() });
+  }
+  let reply = "Podria contarme un poco mas?";
+  try {
+    reply = await nextReply(session, message);
+  } catch (error) {
+    reply = "Podria contarme un poco mas?";
+  }
+  session.messages.push({ role: "system", text: reply, ts: Date.now() });
+  session.assistantCount += 1;
+  if (session.assistantCount >= 10 && session.step !== "done") {
+    session.step = "done";
+    addTimeline(session, "system", "Cierre de conversacion");
+  }
+  await updateSupabase(session);
+  res.json({
+    reply,
+    state: {
+      step: session.step,
+      captured: session.captured,
+    },
+  });
+});
+
+app.get("/api/sessions/:id", rateLimit, (req, res) => {
+  const sessionId = sanitize(req.params.id);
+  const session = sessions.get(sessionId);
+  if (!session) {
+    return res.status(404).json({ error: "Session not found" });
+  }
+  res.json({
+    session_id: session.id,
+    state: {
+      step: session.step,
+      captured: session.captured,
+    },
+    triage: session.triage,
+    timeline: session.timeline,
+  });
+});
+
+server.on("upgrade", (request, socket, head) => {
+  const url = new URL(request.url, `http://${request.headers.host}`);
+  if (url.pathname !== "/ws") {
+    socket.destroy();
+    return;
+  }
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    const sessionId = sanitize(url.searchParams.get("session_id") || "");
+    ws.sessionId = sessionId;
+    wss.emit("connection", ws, request);
+  });
+});
+
+wss.on("connection", (ws) => {
+  const sessionId = ws.sessionId;
+  if (!sessionId) {
+    ws.close();
+    return;
+  }
+  if (!wsClients.has(sessionId)) {
+    wsClients.set(sessionId, new Set());
+  }
+  wsClients.get(sessionId).add(ws);
+  ws.on("close", () => {
+    const set = wsClients.get(sessionId);
+    if (set) {
+      set.delete(ws);
+      if (set.size === 0) wsClients.delete(sessionId);
+    }
+  });
+});
+
+setInterval(() => {
+  const now = Date.now();
+  sessions.forEach((session, id) => {
+    if (now - session.updatedAt > 30 * 60 * 1000) {
+      sessions.delete(id);
+      wsClients.delete(id);
+    }
+  });
+}, 5 * 60 * 1000);
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
+});
