@@ -836,6 +836,7 @@
       .chat-window {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
         gap: 12px;
         min-height: 320px;
         max-height: min(380px, var(--chat-vh, 45svh));
@@ -881,7 +882,7 @@
       }
 
       .chat-message {
-        display: inline-flex;
+        display: flex;
         flex-direction: column;
         gap: 6px;
         padding: 10px 14px;
@@ -904,14 +905,12 @@
         border-radius: 10px;
         margin-left: 0;
         margin-right: 0;
-        align-self: stretch;
       }
 
       .chat-message.system {
         background: rgba(31, 74, 124, 0.06);
         color: var(--graphite-700);
         border: 1px solid rgba(31, 74, 124, 0.12);
-        align-self: flex-start;
         margin-right: auto;
       }
 
@@ -919,7 +918,6 @@
         background: rgba(13, 27, 42, 0.06);
         color: var(--graphite-700);
         border: 1px solid rgba(13, 27, 42, 0.12);
-        align-self: flex-end;
         margin-left: auto;
       }
 
@@ -2124,12 +2122,22 @@
         const safeRole = role || "system";
         bubble.className = `chat-message ${safeRole}`;
         bubble.textContent = text;
+        if (safeRole === "notice" && bubble.classList.contains("patient")) {
+          console.warn("Notice rendered as patient", { text });
+        }
         chatWindow.appendChild(bubble);
         chatWindow.scrollTop = chatWindow.scrollHeight;
       };
 
       const appendNotice = (text) => {
-        appendMessage("notice", text);
+        const bubble = document.createElement("div");
+        bubble.className = "chat-message notice";
+        bubble.textContent = text;
+        if (bubble.classList.contains("patient")) {
+          console.warn("Notice rendered as patient", { text });
+        }
+        chatWindow.appendChild(bubble);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
       };
 
       const highlightCard = (card) => {
