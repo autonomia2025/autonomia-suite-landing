@@ -7,6 +7,7 @@
     <meta
       name="description"
       content="AutonomIA Suite es una Recepcionista Digital 24/7 para clínicas en Chile: atiende WhatsApp y web, agenda citas, reduce carga operativa y aporta orden y continuidad." />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -209,6 +210,62 @@
         color: var(--graphite-300);
         flex: 1;
         justify-content: center;
+      }
+
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        gap: 18px;
+        justify-content: space-between;
+      }
+
+      .nav-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .nav-toggle {
+        display: none;
+      }
+
+      .nav-cta {
+        flex-shrink: 0;
+      }
+
+      .nav-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        border: 1px solid rgba(31, 74, 124, 0.16);
+        background: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+      }
+
+      .nav-toggle span,
+      .nav-toggle span::before,
+      .nav-toggle span::after {
+        display: block;
+        width: 18px;
+        height: 2px;
+        background: var(--graphite-500);
+        position: relative;
+        content: "";
+      }
+
+      .nav-toggle span::before {
+        position: absolute;
+        top: -6px;
+      }
+
+      .nav-toggle span::after {
+        position: absolute;
+        top: 6px;
       }
 
       .nav-links a {
@@ -1240,19 +1297,21 @@
         }
 
         .nav {
-          padding: 12px 18px;
-          width: min(94vw, var(--max-width));
-          border-radius: 20px;
+          padding: 10px 14px;
+          width: min(96vw, var(--max-width));
+          border-radius: 18px;
         }
 
         .nav-links {
           display: flex;
-          gap: 16px;
-          font-size: 0.9rem;
+          gap: 12px;
+          font-size: 0.88rem;
+          flex-wrap: wrap;
+          justify-content: center;
         }
 
         .brand-logo {
-          height: 64px;
+          height: 56px;
         }
 
         .card-grid,
@@ -1277,8 +1336,53 @@
       @media (max-width: 720px) {
         .nav {
           flex-direction: column;
-          align-items: flex-start;
-          gap: 16px;
+          align-items: stretch;
+          gap: 10px;
+          width: 100%;
+          border-radius: 0;
+          margin: 0;
+          background: #ffffff;
+          box-shadow: none;
+          border: none;
+          padding: 8px 12px;
+        }
+
+        .header-wrapper {
+          padding: 0;
+          background: transparent;
+          top: 0;
+        }
+
+        .header-wrapper.is-compact {
+          padding: 0;
+        }
+
+        .page {
+          padding-top: 110px;
+        }
+
+        .nav-top {
+          width: 100%;
+          position: relative;
+          justify-content: space-between;
+        }
+
+        .nav-toggle {
+          display: inline-flex;
+          align-self: flex-end;
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+
+        .brand {
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 8px;
+          width: 100%;
+          padding-left: 12px;
         }
 
         .nav-cta {
@@ -1289,15 +1393,44 @@
           width: 100%;
         }
 
+        .nav-menu {
+          width: 100%;
+          display: none;
+          flex-direction: column;
+          gap: 10px;
+          padding: 12px;
+          border-radius: 12px;
+          border: 1px solid rgba(31, 74, 124, 0.12);
+          background: rgba(255, 255, 255, 0.95);
+        }
+
         .nav-links {
           width: 100%;
-          justify-content: flex-start;
-          flex-wrap: wrap;
-          row-gap: 8px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .nav-links a {
+          padding: 8px 10px;
+          border-radius: 8px;
+          background: rgba(31, 74, 124, 0.04);
+          border: 1px solid rgba(31, 74, 124, 0.1);
+          font-size: 0.85rem;
+        }
+
+        .nav.is-open .nav-menu {
+          display: flex;
+        }
+
+        .nav-cta {
+          width: 100%;
+          flex-direction: column;
+          gap: 8px;
         }
 
         .brand-logo {
-          height: 56px;
+          height: 78px;
         }
 
         .hero {
@@ -1391,21 +1524,28 @@
       <div class="parallax-orb orb-3" data-parallax="-0.18"></div>
       <div class="header-wrapper" id="header-wrapper">
         <header class="nav" id="site-header">
-          <div class="brand">
-            <div class="brand-primary">
-              <span class="brand-logo-wrap">
-                <img class="brand-logo" src="assets/logo.png" alt="AutonomIA" />
-              </span>
+          <div class="nav-top">
+            <div class="brand">
+              <div class="brand-primary">
+                <span class="brand-logo-wrap">
+                  <img class="brand-logo" src="assets/logo.png" alt="AutonomIA" />
+                </span>
+              </div>
             </div>
+            <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu">
+              <span></span>
+            </button>
           </div>
-          <div class="nav-links">
-            <a href="#problemas">Problema operativo</a>
-            <a href="#como-funciona">Como funciona</a>
-            <a href="#beneficios">Impacto diario</a>
-          </div>
-          <div class="nav-cta">
-            <a class="btn btn-secondary" href="https://wa.me/XXXXXXXXXXX">Hablar por WhatsApp</a>
-            <a class="btn btn-primary" href="https://placeholder.demo">Agendar demo</a>
+          <div class="nav-menu" id="nav-menu">
+            <div class="nav-links" id="nav-links">
+              <a href="#problemas">Problema operativo</a>
+              <a href="#como-funciona">Como funciona</a>
+              <a href="#beneficios">Impacto diario</a>
+            </div>
+            <div class="nav-cta">
+              <a class="btn btn-secondary" href="https://wa.me/XXXXXXXXXXX">Hablar por WhatsApp</a>
+              <a class="btn btn-primary" href="https://placeholder.demo">Agendar demo</a>
+            </div>
           </div>
         </header>
       </div>
@@ -2113,6 +2253,39 @@
         );
         chatObserver.observe(chatSection);
       }
+
+      const navToggle = document.getElementById("nav-toggle");
+      if (navToggle) {
+        navToggle.addEventListener("click", () => {
+          header.classList.toggle("is-open");
+          const expanded = header.classList.contains("is-open");
+          navToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+        });
+      }
+
+      const navMenu = document.getElementById("nav-menu");
+      const navLinks = document.querySelectorAll("#nav-links a");
+      const closeMenu = () => {
+        header.classList.remove("is-open");
+        navToggle?.setAttribute("aria-expanded", "false");
+      };
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth <= 720) {
+            closeMenu();
+          }
+        });
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!header.classList.contains("is-open")) return;
+        const target = event.target;
+        const clickedInside = header.contains(target) || navToggle?.contains(target);
+        if (!clickedInside) {
+          closeMenu();
+        }
+      });
 
       const carouselControls = document.querySelectorAll("[data-carousel-controls]");
       carouselControls.forEach((controls) => {
