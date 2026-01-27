@@ -134,7 +134,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 14px 22px;
+        padding: 18px 24px;
         width: min(94vw, var(--max-width));
         margin: 0 auto;
         border-radius: 999px;
@@ -184,7 +184,7 @@
       }
 
       .brand-logo {
-        height: 84px;
+        height: 96px;
         width: auto;
         display: block;
       }
@@ -208,8 +208,8 @@
         gap: 22px;
         font-size: 0.92rem;
         color: var(--graphite-300);
-        flex: 1;
         justify-content: center;
+        margin: 0 auto;
       }
 
       .nav-menu {
@@ -218,13 +218,15 @@
         flex: 1;
         gap: 18px;
         justify-content: space-between;
+        width: 100%;
       }
 
       .nav-top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 100%;
+        width: auto;
+        flex-shrink: 0;
       }
 
       .nav-toggle {
@@ -832,11 +834,13 @@
       }
 
       .chat-window {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: 12px;
         min-height: 320px;
-        max-height: min(380px, 45svh);
+        max-height: min(380px, var(--chat-vh, 45svh));
         overflow-y: auto;
+        overflow-x: hidden;
         padding-right: 6px;
         flex: 1;
         min-height: 0;
@@ -886,20 +890,21 @@
         line-height: 1.5;
         width: fit-content;
         max-width: 90%;
+        word-break: break-word;
       }
 
       .chat-message.system {
         background: rgba(31, 74, 124, 0.06);
         color: var(--graphite-700);
         border: 1px solid rgba(31, 74, 124, 0.12);
-        justify-self: start;
+        align-self: flex-start;
       }
 
       .chat-message.patient {
         background: rgba(13, 27, 42, 0.06);
         color: var(--graphite-700);
         border: 1px solid rgba(13, 27, 42, 0.12);
-        justify-self: end;
+        align-self: flex-end;
       }
 
       .typing-indicator {
@@ -1312,7 +1317,7 @@
         }
 
         .nav {
-          padding: 10px 14px;
+          padding: 14px 18px;
           width: min(96vw, var(--max-width));
           border-radius: 18px;
         }
@@ -1326,7 +1331,7 @@
         }
 
         .brand-logo {
-          height: 56px;
+          height: 68px;
         }
 
         .card-grid,
@@ -1359,7 +1364,7 @@
           background: #ffffff;
           box-shadow: none;
           border: none;
-          padding: 12px 16px;
+          padding: 16px 18px;
         }
 
         .header-wrapper {
@@ -1445,7 +1450,7 @@
         }
 
         .brand-logo {
-          height: 88px;
+          height: 100px;
         }
 
         .hero {
@@ -1488,11 +1493,11 @@
 
         .chat-window {
           min-height: 200px;
-          max-height: 42svh;
+          max-height: var(--chat-vh, 42svh);
         }
 
         .chat-panel {
-          max-height: 70svh;
+          max-height: var(--chat-panel-vh, 70svh);
         }
 
         .chat-input {
@@ -2263,6 +2268,20 @@
           chatWindow.scrollTop = chatWindow.scrollHeight;
         });
       });
+
+      const updateChatViewport = () => {
+        if (!window.visualViewport) return;
+        const vh = Math.max(window.visualViewport.height * 0.42, 220);
+        const panelVh = Math.max(window.visualViewport.height * 0.7, 420);
+        document.documentElement.style.setProperty("--chat-vh", `${vh}px`);
+        document.documentElement.style.setProperty("--chat-panel-vh", `${panelVh}px`);
+      };
+
+      if (window.visualViewport) {
+        updateChatViewport();
+        window.visualViewport.addEventListener("resize", updateChatViewport);
+        window.visualViewport.addEventListener("scroll", updateChatViewport);
+      }
 
       let chatAutoStarted = false;
       const chatSection = document.querySelector(".chat-demo");
