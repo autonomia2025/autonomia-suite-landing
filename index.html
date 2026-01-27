@@ -832,9 +832,12 @@
         display: grid;
         gap: 12px;
         min-height: 320px;
-        max-height: 380px;
+        max-height: min(380px, 45svh);
         overflow-y: auto;
         padding-right: 6px;
+        flex: 1;
+        min-height: 0;
+        overscroll-behavior: contain;
       }
 
       .chat-input {
@@ -845,6 +848,12 @@
         bottom: 0;
         background: rgba(247, 249, 252, 0.9);
         padding-top: 10px;
+      }
+
+      .chat-left {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
       }
 
       .chat-input input {
@@ -1472,8 +1481,8 @@
         }
 
         .chat-window {
-          min-height: 220px;
-          max-height: 300px;
+          min-height: 200px;
+          max-height: 42svh;
         }
 
         .chat-input {
@@ -1606,7 +1615,8 @@
                     <button class="mini-reset" id="chat-reset" type="button">↻ Reiniciar</button>
                   </div>
                   <div class="chat-banner" id="chat-banner">Backend no disponible.</div>
-                  <div class="chat-window" id="chat-window"></div>
+                  <div class="chat-left">
+                    <div class="chat-window" id="chat-window"></div>
                   <div class="typing-indicator" id="typing-indicator">
                     <span></span>
                     <span></span>
@@ -1622,6 +1632,7 @@
                       disabled />
                     <button class="btn btn-primary" type="submit">Enviar</button>
                   </form>
+                  </div>
                 </div>
                 <div class="chat-panel">
                   <div class="chat-header">
