@@ -791,6 +791,9 @@
         background: rgba(247, 249, 252, 0.7);
         box-shadow: 0 10px 24px rgba(13, 27, 42, 0.06);
         padding: 18px;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
       }
 
       .chat-panel-grid {
@@ -838,6 +841,8 @@
         flex: 1;
         min-height: 0;
         overscroll-behavior: contain;
+        overflow-anchor: none;
+        scrollbar-gutter: stable;
       }
 
       .chat-input {
@@ -854,6 +859,7 @@
         display: flex;
         flex-direction: column;
         min-height: 0;
+        height: 100%;
       }
 
       .chat-input input {
@@ -1483,6 +1489,10 @@
         .chat-window {
           min-height: 200px;
           max-height: 42svh;
+        }
+
+        .chat-panel {
+          max-height: 70svh;
         }
 
         .chat-input {
@@ -2246,6 +2256,12 @@
         if (!value) return;
         chatInput.value = "";
         await sendMessage(value, true);
+      });
+
+      chatInput.addEventListener("focus", () => {
+        requestAnimationFrame(() => {
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+        });
       });
 
       let chatAutoStarted = false;
