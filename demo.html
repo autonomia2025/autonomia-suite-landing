@@ -6,7 +6,7 @@
     <title>Demo | AutonomIA Suite</title>
     <meta
       name="description"
-      content="Demo operacional de AutonomIA Suite: recepcion digital 24/7 y flujo clinico con trazabilidad." />
+      content="Demo operacional de AutonomIA Suite con recepcion digital, triage y trazabilidad." />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,62 +38,416 @@
         box-shadow: var(--shadow-card);
       }
 
-      .card-grid {
+      .chat-demo {
+        background: linear-gradient(180deg, rgba(31, 74, 124, 0.04) 0%, rgba(255, 255, 255, 0.9) 40%, #ffffff 100%);
+        position: relative;
+      }
+
+      .chat-demo-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 18px;
-        margin-top: 28px;
+        gap: 24px;
       }
 
-      .card {
-        padding: 20px;
-        border-radius: var(--radius-md);
-        border: 1px solid #e1e5ed;
-        background: var(--white);
-        box-shadow: 0 12px 26px rgba(13, 27, 42, 0.06);
+      .demo-card {
+        border-radius: 18px;
+        border: 1px solid rgba(31, 74, 124, 0.18);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 255, 0.92));
+        box-shadow: 0 22px 50px rgba(13, 27, 42, 0.12);
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
       }
 
-      .card h4 {
-        color: var(--navy-900);
-        margin-bottom: 10px;
+      .demo-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, rgba(31, 74, 124, 0.9), rgba(13, 111, 123, 0.7));
       }
 
-      .card p {
+      .demo-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(31, 74, 124, 0.18);
+        background: rgba(31, 74, 124, 0.06);
+        color: var(--accent);
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      .demo-split {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+        align-items: stretch;
+        margin-top: 18px;
+      }
+
+      .demo-split > .chat-panel {
+        min-width: 0;
+      }
+
+      .chat-panel {
+        border-radius: 14px;
+        border: 1px solid rgba(31, 74, 124, 0.12);
+        background: rgba(247, 249, 252, 0.7);
+        box-shadow: 0 10px 24px rgba(13, 27, 42, 0.06);
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .chat-banner {
+        display: none;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(31, 74, 124, 0.2);
+        background: rgba(31, 74, 124, 0.06);
         color: var(--graphite-500);
+        font-size: 0.8rem;
+        margin-bottom: 12px;
+        width: fit-content;
       }
 
-      .steps {
+      .chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+
+      .chat-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--navy-900);
+      }
+
+      .chat-subtitle {
+        font-size: 0.85rem;
+        color: var(--graphite-300);
+      }
+
+      .chat-window {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        min-height: 320px;
+        max-height: min(380px, var(--chat-vh, 45svh));
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0 8px;
+        flex: 1;
+        min-height: 0;
+        overscroll-behavior: contain;
+        overflow-anchor: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .chat-input {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+        position: sticky;
+        bottom: 0;
+        background: rgba(247, 249, 252, 0.9);
+        padding-top: 10px;
+      }
+
+      .chat-left {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        height: 100%;
+      }
+
+      .chat-input input {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--graphite-200);
+        background: #fbfcfe;
+        font-size: 0.95rem;
+        color: var(--graphite-700);
+      }
+
+      .chat-input button {
+        padding: 12px 18px;
+      }
+
+      .chat-message {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        width: auto;
+        max-width: calc(100% - 24px);
+        word-break: break-word;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .chat-message.notice {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        text-align: left;
+        background: rgba(31, 74, 124, 0.06);
+        color: var(--graphite-500);
+        border: 1px dashed rgba(31, 74, 124, 0.2);
+        border-radius: 10px;
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .chat-message.system {
+        background: rgba(31, 74, 124, 0.06);
+        color: var(--graphite-700);
+        border: 1px solid rgba(31, 74, 124, 0.12);
+        margin-left: 0;
+        margin-right: auto;
+      }
+
+      .chat-message.patient {
+        background: rgba(13, 27, 42, 0.06);
+        color: var(--graphite-700);
+        border: 1px solid rgba(13, 27, 42, 0.12);
+        margin-left: auto;
+        margin-right: 0;
+      }
+
+      .typing-indicator {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: rgba(31, 74, 124, 0.08);
+        color: var(--graphite-500);
+        font-size: 0.9rem;
+        margin-top: 12px;
+      }
+
+      .typing-indicator span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: typing 1.2s infinite ease-in-out;
+      }
+
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      .chat-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .clinic-panel {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 18px;
-        margin-top: 24px;
+        gap: 14px;
+        min-width: 0;
       }
 
-      .step {
-        border: 1px solid #e1e5ed;
-        border-radius: var(--radius-md);
-        padding: 20px;
-        background: var(--white);
+      .clinic-card {
+        border-radius: 12px;
+        border: 1px solid rgba(31, 74, 124, 0.12);
+        padding: 12px 14px;
+        background: rgba(245, 248, 252, 0.8);
+        min-width: 0;
       }
 
-      .step span {
+      .clinic-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .clinic-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .clinic-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: var(--accent-soft);
-        color: var(--accent);
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
         font-weight: 600;
-        margin-bottom: 10px;
+        background: rgba(31, 74, 124, 0.1);
+        color: var(--accent);
+        border: 1px solid rgba(31, 74, 124, 0.16);
+      }
+
+      .clinic-badge.is-high {
+        background: rgba(171, 44, 61, 0.12);
+        color: #ab2c3d;
+        border-color: rgba(171, 44, 61, 0.2);
+      }
+
+      .clinic-badge.is-medium {
+        background: rgba(209, 120, 24, 0.12);
+        color: #b45f0f;
+        border-color: rgba(209, 120, 24, 0.2);
+      }
+
+      .clinic-badge.is-low {
+        background: rgba(31, 74, 124, 0.1);
+        color: var(--accent);
+        border-color: rgba(31, 74, 124, 0.16);
+      }
+
+      .clinic-label {
+        font-size: 0.8rem;
+        color: var(--graphite-300);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .clinic-value {
+        font-size: 1rem;
+        color: var(--graphite-700);
+        margin-top: 6px;
+        font-weight: 600;
+        word-break: break-word;
+      }
+
+      .clinic-card.is-highlight {
+        animation: flash 0.6s ease;
+      }
+
+      .mini-reset {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: var(--graphite-300);
+        cursor: pointer;
+        border: none;
+        background: transparent;
+      }
+
+      @keyframes flash {
+        0% {
+          background: rgba(31, 74, 124, 0.16);
+        }
+        100% {
+          background: rgba(245, 248, 252, 0.8);
+        }
+      }
+
+      @keyframes typing {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.8);
+          opacity: 0.6;
+        }
+        40% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .chat-panel,
+      .chat-left,
+      .chat-window {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+      }
+
+      .chat-message {
+        min-width: 0 !important;
+        max-width: 90% !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+        white-space: pre-wrap !important;
+      }
+
+      .chat-message a {
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+      }
+
+      .chat-message pre,
+      .chat-message code {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
       }
 
       @media (max-width: 980px) {
         .hero-grid,
-        .steps,
-        .card-grid {
+        .demo-split {
           grid-template-columns: 1fr;
+        }
+
+        .chat-window {
+          min-height: 260px;
+          max-height: 320px;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .chat-window {
+          min-height: 200px;
+          max-height: var(--chat-vh, 42svh);
+        }
+
+        .chat-panel {
+          max-height: var(--chat-panel-vh, 70svh);
+          width: 92%;
+          margin: 0 auto;
+        }
+
+        .chat-input {
+          flex-direction: column;
+        }
+
+        .demo-card {
+          padding: 18px;
+        }
+
+        .clinic-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .chat-window {
+          min-height: 200px;
+          max-height: 260px;
+        }
+
+        .clinic-card {
+          padding: 10px 12px;
         }
       }
     </style>
@@ -108,6 +462,7 @@
             <a href="demo.html">Demo</a>
             <a href="como-funciona.html">Como funciona</a>
             <a href="impacto.html">Impacto</a>
+            <a href="quienes-somos.html">Quienes somos</a>
           </nav>
           <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
         </header>
@@ -117,67 +472,107 @@
         <div class="hero-grid">
           <div>
             <span class="eyebrow">Demo Operacional</span>
-            <h1 class="title-gradient">Visualiza el flujo completo en minutos</h1>
+            <h1 class="title-gradient">Recepcion digital en tiempo real</h1>
             <p>
-              Esta demo replica el comportamiento de la recepcion digital: captura datos, clasifica
-              prioridad y registra trazabilidad para que tu equipo vea lo que importa.
+              Visualiza el flujo completo: captura de datos, triage y trazabilidad operativa, con la
+              misma logica que usarias con pacientes reales.
             </p>
           </div>
           <div class="hero-card">
             <h3>Que veras</h3>
-            <p>Conversacion guiada y panel operativo en paralelo.</p>
-            <div class="steps">
-              <div class="step">
-                <span>1</span>
-                <strong>Ingreso</strong>
-                <p>Captura motivo, ciudad y horario.</p>
+            <p>Conversacion guiada y panel clinico en paralelo.</p>
+            <p class="chat-subtitle">Abre el chat y comienza la simulacion.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="chat-demo" id="demo">
+        <div class="container chat-demo-grid">
+          <div>
+            <h2 class="section-title title-gradient">Simula una recepcion real</h2>
+            <p class="section-subtitle">
+              La demo captura motivo, ciudad y horario, y actualiza el panel operativo en vivo.
+            </p>
+          </div>
+          <div class="demo-card">
+            <div class="demo-eyebrow">Demo en vivo</div>
+            <div class="demo-split">
+              <div class="chat-panel chat-left">
+                <div class="chat-header">
+                  <div>
+                    <div class="chat-title">Recepcion digital</div>
+                    <div class="chat-subtitle">Paciente · Web</div>
+                  </div>
+                  <button class="mini-reset" id="chat-reset" type="button">Reiniciar</button>
+                </div>
+                <div class="chat-banner" id="chat-banner">Servidor desconectado</div>
+                <div class="chat-window" id="chat-window"></div>
+                <div class="typing-indicator" id="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  Escribiendo
+                </div>
+                <form class="chat-input" id="chat-form">
+                  <input
+                    id="chat-input"
+                    type="text"
+                    placeholder="Inicializando demo"
+                    autocomplete="off"
+                    disabled />
+                  <button class="btn btn-primary" type="submit">Enviar</button>
+                </form>
               </div>
-              <div class="step">
-                <span>2</span>
-                <strong>Triage</strong>
-                <p>Prioriza y define accion sugerida.</p>
-              </div>
-              <div class="step">
-                <span>3</span>
-                <strong>Registro</strong>
-                <p>Timeline de eventos con estado claro.</p>
+              <div class="chat-panel clinic-panel">
+                <div class="chat-header">
+                  <div>
+                    <div class="chat-title">Panel operativo</div>
+                    <div class="chat-subtitle">Vista clinica</div>
+                  </div>
+                  <span class="clinic-badge is-low" id="clinic-priority-badge">—</span>
+                </div>
+                <div class="clinic-card" id="card-status">
+                  <div class="clinic-row">
+                    <div>
+                      <div class="clinic-label">Estado</div>
+                      <div class="clinic-value" id="clinic-status">—</div>
+                    </div>
+                    <span class="clinic-badge is-low" id="clinic-label">—</span>
+                  </div>
+                </div>
+                <div class="clinic-grid">
+                  <div class="clinic-card" id="card-name">
+                    <div class="clinic-label">Paciente</div>
+                    <div class="clinic-value" id="clinic-name">—</div>
+                  </div>
+                  <div class="clinic-card" id="card-city">
+                    <div class="clinic-label">Ciudad</div>
+                    <div class="clinic-value" id="clinic-city">—</div>
+                  </div>
+                  <div class="clinic-card" id="card-reason">
+                    <div class="clinic-label">Motivo</div>
+                    <div class="clinic-value" id="clinic-reason">—</div>
+                  </div>
+                  <div class="clinic-card" id="card-preference">
+                    <div class="clinic-label">Horario</div>
+                    <div class="clinic-value" id="clinic-preference">—</div>
+                  </div>
+                </div>
+                <div class="clinic-grid">
+                  <div class="clinic-card" id="card-priority">
+                    <div class="clinic-label">Prioridad</div>
+                    <div class="clinic-value" id="clinic-priority">—</div>
+                  </div>
+                  <div class="clinic-card" id="card-action">
+                    <div class="clinic-label">Accion sugerida</div>
+                    <div class="clinic-value" id="clinic-action">—</div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="container">
-        <h2 class="section-title title-gradient">Como iniciar la demo local</h2>
-        <p class="section-subtitle">
-          Corre el servidor Node y abre el sitio. El chat se conecta automaticamente si el backend
-          esta disponible.
-        </p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>1. Instalar dependencias</h4>
-            <p>Ejecuta <code>npm install</code> en el proyecto.</p>
-          </div>
-          <div class="card">
-            <h4>2. Iniciar servidor</h4>
-            <p>Ejecuta <code>npm start</code> y revisa <code>localhost:3000</code>.</p>
-          </div>
-          <div class="card">
-            <h4>3. Explorar flujo</h4>
-            <p>Abre el chat y observa la captura en tiempo real.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="cta">
-        <div class="container">
-          <div class="cta-card">
-            <h2 class="section-title title-gradient">Listo para ver el flujo en vivo</h2>
-            <p class="section-subtitle">
-              La demo muestra el control operativo y la continuidad que tu clinica necesita.
-            </p>
-            <div style="margin-top: 18px;">
+            <div class="chat-actions">
               <a class="btn btn-primary" href="index.html#cta-final">Agendar demo guiada</a>
+              <span class="chat-subtitle">La demo esta activa para todos los visitantes.</span>
             </div>
           </div>
         </div>
@@ -185,5 +580,272 @@
 
       <footer class="container footer">AutonomIA Suite · Software de gestion profesional</footer>
     </div>
+    <script>
+      if (document.getElementById("chat-window")) {
+        const chatWindow = document.getElementById("chat-window");
+        const chatReset = document.getElementById("chat-reset");
+        const typingIndicator = document.getElementById("typing-indicator");
+        const chatForm = document.getElementById("chat-form");
+        const chatInput = document.getElementById("chat-input");
+        const chatBanner = document.getElementById("chat-banner");
+        const clinicLabel = document.getElementById("clinic-label");
+        const clinicPriorityBadge = document.getElementById("clinic-priority-badge");
+        const clinicCity = document.getElementById("clinic-city");
+        const clinicPreference = document.getElementById("clinic-preference");
+        const cardMap = {
+          name: document.getElementById("card-name"),
+          reason: document.getElementById("card-reason"),
+          city: document.getElementById("card-city"),
+          preference: document.getElementById("card-preference"),
+          status: document.getElementById("card-status"),
+          priority: document.getElementById("card-priority"),
+          action: document.getElementById("card-action"),
+        };
+
+        const clinicPanel = {
+          name: document.getElementById("clinic-name"),
+          reason: document.getElementById("clinic-reason"),
+          status: document.getElementById("clinic-status"),
+          priority: document.getElementById("clinic-priority"),
+          action: document.getElementById("clinic-action"),
+        };
+
+        const apiBase =
+          window.location.protocol === "file:" ? "http://localhost:3000" : window.location.origin;
+        const wsBase =
+          window.location.protocol === "file:"
+            ? "ws://localhost:3000"
+            : `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`;
+
+        let sessionId = null;
+        let ws = null;
+        let wsReady = false;
+
+        const setTyping = (visible) => {
+          typingIndicator.style.display = visible ? "flex" : "none";
+        };
+
+        const resetPanel = () => {
+          clinicPanel.name.textContent = "—";
+          clinicPanel.reason.textContent = "—";
+          clinicPanel.status.textContent = "—";
+          clinicPanel.priority.textContent = "—";
+          clinicPanel.action.textContent = "—";
+          clinicCity.textContent = "—";
+          clinicPreference.textContent = "—";
+          clinicLabel.textContent = "—";
+          clinicLabel.className = "clinic-badge is-low";
+          clinicPriorityBadge.textContent = "—";
+          clinicPriorityBadge.className = "clinic-badge is-low";
+        };
+
+        const clearChat = () => {
+          chatWindow.innerHTML = "";
+          setTyping(false);
+          resetPanel();
+        };
+
+        const appendMessage = (role, text) => {
+          const bubble = document.createElement("div");
+          const safeRole = role || "system";
+          bubble.className = `chat-message ${safeRole}`;
+          bubble.textContent = text;
+          chatWindow.appendChild(bubble);
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+        };
+
+        const appendNotice = (text) => {
+          const bubble = document.createElement("div");
+          bubble.className = "chat-message notice";
+          bubble.textContent = text;
+          chatWindow.appendChild(bubble);
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+        };
+
+        const highlightCard = (card) => {
+          if (!card) return;
+          card.classList.remove("is-highlight");
+          void card.offsetWidth;
+          card.classList.add("is-highlight");
+        };
+
+        const connectWebSocket = (id) => {
+          if (ws) {
+            ws.close();
+          }
+          ws = new WebSocket(`${wsBase}/ws?session_id=${id}`);
+          wsReady = false;
+          ws.addEventListener("open", () => {
+            wsReady = true;
+          });
+          ws.addEventListener("close", () => {
+            wsReady = false;
+          });
+          ws.addEventListener("message", (event) => {
+            const payload = JSON.parse(event.data);
+            if (payload.event === "patient.updated") {
+              if (payload.data.name) {
+                clinicPanel.name.textContent = payload.data.name;
+                highlightCard(cardMap.name);
+              }
+              if (payload.data.reason) {
+                clinicPanel.reason.textContent = payload.data.reason;
+                highlightCard(cardMap.reason);
+              }
+              if (payload.data.city) {
+                clinicCity.textContent = payload.data.city;
+                highlightCard(cardMap.city);
+              }
+              if (payload.data.preferred_time) {
+                clinicPreference.textContent = payload.data.preferred_time;
+                highlightCard(cardMap.preference);
+              }
+            }
+            if (payload.event === "triage.updated") {
+              clinicPanel.priority.textContent = payload.data.priority;
+              clinicPanel.action.textContent = payload.data.suggested_action;
+              if (payload.data.label) clinicPanel.status.textContent = payload.data.label;
+              if (payload.data.label) clinicLabel.textContent = payload.data.label;
+              highlightCard(cardMap.status);
+              highlightCard(cardMap.action);
+              if (payload.data.priority) {
+                clinicPriorityBadge.textContent = payload.data.priority;
+                const badgeClass =
+                  payload.data.priority === "Alta"
+                    ? "clinic-badge is-high"
+                    : payload.data.priority === "Media"
+                    ? "clinic-badge is-medium"
+                    : "clinic-badge is-low";
+                clinicPriorityBadge.className = badgeClass;
+                highlightCard(cardMap.priority);
+              }
+            }
+          });
+        };
+
+        const refreshSnapshot = async () => {
+          if (!sessionId) return;
+          const response = await fetch(`${apiBase}/api/sessions/${sessionId}`);
+          if (!response.ok) return;
+          const snapshot = await response.json();
+          if (snapshot.state?.captured?.name) clinicPanel.name.textContent = snapshot.state.captured.name;
+          if (snapshot.state?.captured?.reason) clinicPanel.reason.textContent = snapshot.state.captured.reason;
+          if (snapshot.state?.captured?.city) clinicCity.textContent = snapshot.state.captured.city;
+          if (snapshot.state?.captured?.preferred_time)
+            clinicPreference.textContent = snapshot.state.captured.preferred_time;
+          if (snapshot.triage?.priority) clinicPanel.priority.textContent = snapshot.triage.priority;
+          if (snapshot.triage?.suggested_action)
+            clinicPanel.action.textContent = snapshot.triage.suggested_action;
+          if (snapshot.triage?.label) clinicPanel.status.textContent = snapshot.triage.label;
+          if (snapshot.triage?.label) clinicLabel.textContent = snapshot.triage.label;
+          if (snapshot.triage?.priority) {
+            clinicPriorityBadge.textContent = snapshot.triage.priority;
+            const badgeClass =
+              snapshot.triage.priority === "Alta"
+                ? "clinic-badge is-high"
+                : snapshot.triage.priority === "Media"
+                ? "clinic-badge is-medium"
+                : "clinic-badge is-low";
+            clinicPriorityBadge.className = badgeClass;
+          }
+        };
+
+        const createSession = async () => {
+          try {
+            const response = await fetch(`${apiBase}/api/sessions`, { method: "POST" });
+            if (!response.ok) throw new Error("session");
+            const data = await response.json();
+            sessionId = data.session_id;
+            connectWebSocket(sessionId);
+            clearChat();
+            chatInput.disabled = false;
+            chatInput.placeholder = "Escriba su mensaje";
+            chatBanner.style.display = "none";
+          } catch (error) {
+            chatBanner.style.display = "block";
+            chatInput.disabled = true;
+            appendNotice("Para activar la demo, inicia el servidor y recarga esta pagina.");
+          }
+        };
+
+        const sendMessage = async (message, includePatient = true) => {
+          if (!sessionId) return;
+          if (includePatient && message) {
+            appendMessage("patient", message);
+          }
+          setTyping(true);
+          let data = null;
+          try {
+            const response = await fetch(`${apiBase}/api/chat`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ session_id: sessionId, message }),
+            });
+            if (!response.ok) throw new Error("chat");
+            data = await response.json();
+          } catch (error) {
+            setTyping(false);
+            chatBanner.style.display = "block";
+            appendNotice("No fue posible conectar con la demo en este momento.");
+            return;
+          }
+          setTyping(false);
+          if (data.reply) {
+            appendMessage("system", data.reply);
+          }
+          if (data.state?.step === "done") {
+            chatInput.disabled = true;
+            chatInput.placeholder = "Conversacion finalizada";
+          }
+          if (!wsReady) {
+            await refreshSnapshot();
+          }
+        };
+
+        chatReset.addEventListener("click", async () => {
+          await createSession();
+          await sendMessage("", false);
+        });
+
+        chatForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const value = chatInput.value.trim();
+          if (!value) return;
+          chatInput.value = "";
+          await sendMessage(value, true);
+        });
+
+        chatInput.addEventListener("focus", () => {
+          requestAnimationFrame(() => {
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+          });
+        });
+
+        const updateChatViewport = () => {
+          if (!window.visualViewport) return;
+          const vh = Math.max(window.visualViewport.height * 0.42, 220);
+          const panelVh = Math.max(window.visualViewport.height * 0.7, 420);
+          document.documentElement.style.setProperty("--chat-vh", `${vh}px`);
+          document.documentElement.style.setProperty("--chat-panel-vh", `${panelVh}px`);
+        };
+
+        if (window.visualViewport) {
+          updateChatViewport();
+          window.visualViewport.addEventListener("resize", updateChatViewport);
+          window.visualViewport.addEventListener("scroll", updateChatViewport);
+        }
+
+        const startChat = async () => {
+          await createSession();
+          await sendMessage("", false);
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", startChat, { once: true });
+        } else {
+          startChat();
+        }
+      }
+    </script>
   </body>
 </html>

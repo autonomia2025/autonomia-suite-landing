@@ -44,8 +44,155 @@
         color: var(--graphite-500);
       }
 
+      .implementation-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 24px;
+      }
+
+      .implementation-card {
+        border-radius: var(--radius-md);
+        border: 1px solid #e1e5ed;
+        background: var(--white);
+        padding: 22px;
+        box-shadow: 0 14px 30px rgba(13, 27, 42, 0.07);
+      }
+
+      .implementation-card strong {
+        display: block;
+        color: var(--navy-900);
+        font-size: 1.05rem;
+        margin-bottom: 6px;
+      }
+
+      .implementation-card p {
+        color: var(--graphite-500);
+      }
+
+      .interactive-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 22px;
+        margin-top: 24px;
+        align-items: start;
+      }
+
+      .step-stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .step-card {
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(31, 74, 124, 0.14);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 16px 18px;
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .step-card h4 {
+        color: var(--navy-900);
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+
+      .step-card p {
+        color: var(--graphite-500);
+        font-size: 0.95rem;
+      }
+
+      .step-card.is-active {
+        transform: translateY(-2px);
+        border-color: rgba(31, 74, 124, 0.35);
+        box-shadow: 0 12px 26px rgba(13, 27, 42, 0.1);
+      }
+
+      .step-detail {
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(31, 74, 124, 0.18);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.92));
+        padding: 22px 24px;
+        box-shadow: 0 18px 40px rgba(13, 27, 42, 0.1);
+      }
+
+      .step-detail h3 {
+        color: var(--navy-900);
+        margin-bottom: 10px;
+      }
+
+      .step-detail ul {
+        list-style: none;
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .step-detail li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        color: var(--graphite-500);
+      }
+
+      .step-detail li span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        margin-top: 8px;
+        flex-shrink: 0;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 14px;
+        margin-top: 24px;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 12px;
+        align-items: start;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(31, 74, 124, 0.12);
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .timeline-item span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(31, 74, 124, 0.12);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .timeline-item h4 {
+        color: var(--navy-900);
+        margin-bottom: 6px;
+      }
+
+      .timeline-item p {
+        color: var(--graphite-500);
+      }
+
       @media (max-width: 980px) {
         .flow-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .implementation-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .interactive-shell {
           grid-template-columns: 1fr;
         }
       }
@@ -61,6 +208,7 @@
             <a href="demo.html">Demo</a>
             <a href="como-funciona.html">Como funciona</a>
             <a href="impacto.html">Impacto</a>
+            <a href="quienes-somos.html">Quienes somos</a>
           </nav>
           <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
         </header>
@@ -68,34 +216,123 @@
 
       <section class="hero container">
         <span class="eyebrow">Metodo operativo</span>
-        <h1 class="title-gradient">Orden, prioridad y continuidad en cada contacto</h1>
+        <h1 class="title-gradient">Orden que se siente desde el primer contacto</h1>
         <p>
-          AutonomIA Suite no solo responde. Captura la informacion critica, clasifica la urgencia y
-          mantiene trazabilidad para que tu equipo actue con claridad.
+          AutonomIA Suite no solo responde. Genera confianza, evita desgaste y deja la sensacion de
+          que todo esta bajo control.
         </p>
       </section>
 
       <section class="container">
         <h2 class="section-title title-gradient">El flujo, paso a paso</h2>
         <p class="section-subtitle">
-          Cada interaccion pasa por un esquema simple: capturar, priorizar, resolver o derivar.
+          Una conversacion clara reduce dudas, acelera decisiones y deja a los pacientes tranquilos.
         </p>
         <div class="flow-grid">
           <div class="flow-card">
-            <h4>1. Captura dirigida</h4>
-            <p>Recolecta motivo, ciudad y preferencia horaria sin friccion.</p>
+            <h4>1. Conversacion que calma</h4>
+            <p>Preguntas cortas, tono profesional y una sensacion de orden inmediato.</p>
           </div>
           <div class="flow-card">
-            <h4>2. Clasificacion clinica</h4>
-            <p>Identifica prioridad y tipo de solicitud para evitar saturacion.</p>
+            <h4>2. Claridad desde el inicio</h4>
+            <p>Se entiende lo que necesita el paciente sin idas y vueltas.</p>
           </div>
           <div class="flow-card">
-            <h4>3. Accion sugerida</h4>
-            <p>Define si se resuelve automaticamente o si el equipo interviene.</p>
+            <h4>3. Respuesta que avanza</h4>
+            <p>El flujo sigue su curso y el equipo interviene solo cuando importa.</p>
           </div>
           <div class="flow-card">
-            <h4>4. Trazabilidad</h4>
-            <p>Registra eventos y estados para mantener control operativo.</p>
+            <h4>4. Confianza operativa</h4>
+            <p>Todo queda claro, sin perdida de contexto ni dudas internas.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="container">
+        <h2 class="section-title title-gradient">Implementacion acompañada</h2>
+        <p class="section-subtitle">
+          Nos ocupamos de todo para que tu equipo no pierda tiempo ni energia.
+        </p>
+        <div class="implementation-grid">
+          <div class="implementation-card">
+            <strong>Escuchamos tu realidad</strong>
+            <p>Entendemos tu forma de trabajar y lo que hoy genera friccion.</p>
+          </div>
+          <div class="implementation-card">
+            <strong>Ordenamos el recorrido</strong>
+            <p>Armamos un flujo simple que evita perdidas y da continuidad.</p>
+          </div>
+          <div class="implementation-card">
+            <strong>Activamos y acompañamos</strong>
+            <p>Dejas de apagar incendios y empiezas a ver estabilidad.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="container">
+        <h2 class="section-title title-gradient">Explora el flujo en accion</h2>
+        <p class="section-subtitle">
+          Haz clic en cada etapa y mira como cambia la experiencia del paciente.
+        </p>
+        <div class="interactive-shell" id="flow-interactive">
+          <div class="step-stack">
+            <button class="step-card is-active" type="button" data-step="captura">
+              <h4>1. Bienvenida clara</h4>
+              <p>El paciente entiende que esta siendo atendido.</p>
+            </button>
+            <button class="step-card" type="button" data-step="triage">
+              <h4>2. Orden sin friccion</h4>
+              <p>Se clarifica lo importante sin esfuerzo.</p>
+            </button>
+            <button class="step-card" type="button" data-step="continuidad">
+              <h4>3. Continuidad real</h4>
+              <p>Se evita la sensacion de abandono.</p>
+            </button>
+            <button class="step-card" type="button" data-step="derivacion">
+              <h4>4. Escala con criterio</h4>
+              <p>El equipo recibe lo esencial, sin ruido.</p>
+            </button>
+          </div>
+          <div class="step-detail" id="step-detail">
+            <h3>Bienvenida clara</h3>
+            <p>
+              Desde el primer mensaje, la persona siente que su consulta importa.
+            </p>
+            <ul>
+              <li><span></span>Respuestas rapidas y tono profesional</li>
+              <li><span></span>Preguntas breves que no agotan</li>
+              <li><span></span>La conversacion avanza sin tension</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="container">
+        <h2 class="section-title title-gradient">Linea de activacion</h2>
+        <p class="section-subtitle">
+          En menos de 48 horas puedes pasar del caos a una recepcion ordenada.
+        </p>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span>24h</span>
+            <div>
+              <h4>Diagnostico y claridad</h4>
+              <p>Entendemos la urgencia real y definimos un flujo que tranquiliza.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span>36h</span>
+            <div>
+              <h4>Pruebas con tu equipo</h4>
+              <p>Validamos que todo se sienta natural y profesional.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span>48h</span>
+            <div>
+              <h4>Inicio con seguridad</h4>
+              <p>Se activa el flujo y el equipo recupera aire.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -103,9 +340,9 @@
       <section class="cta">
         <div class="container">
           <div class="cta-card">
-            <h2 class="section-title title-gradient">Listo para ver el flujo aplicado</h2>
+            <h2 class="section-title title-gradient">Listo para recuperar el control</h2>
             <p class="section-subtitle">
-              Coordinamos una demo y adaptamos el flujo a tu operacion clinica real.
+              Coordinamos una demo y te mostramos como se sentiria en tu clinica.
             </p>
             <div style="margin-top: 18px;">
               <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
@@ -116,5 +353,72 @@
 
       <footer class="container footer">AutonomIA Suite · Software de gestion profesional</footer>
     </div>
+    <script>
+      const stepContent = {
+        captura: {
+          title: "Bienvenida clara",
+          intro:
+            "Desde el primer mensaje, la persona siente que su consulta importa.",
+          bullets: [
+            "Respuestas rapidas y tono profesional",
+            "Preguntas breves que no agotan",
+            "La conversacion avanza sin tension",
+          ],
+        },
+        triage: {
+          title: "Orden sin friccion",
+          intro:
+            "Se entiende lo importante sin que el paciente tenga que explicar de mas.",
+          bullets: [
+            "Se prioriza con claridad",
+            "Menos dudas, mas avance",
+            "El equipo recibe contexto real",
+          ],
+        },
+        continuidad: {
+          title: "Continuidad real",
+          intro:
+            "La experiencia se siente estable, sin cortes ni repeticiones.",
+          bullets: [
+            "Cada paso se mantiene ordenado",
+            "Se evita la sensacion de abandono",
+            "Todo el equipo comparte la misma vision",
+          ],
+        },
+        derivacion: {
+          title: "Escala con criterio",
+          intro:
+            "Solo llega al equipo lo que realmente necesita intervencion.",
+          bullets: [
+            "Menos interrupciones",
+            "Mas foco en casos relevantes",
+            "La recepcion respira",
+          ],
+        },
+      };
+
+      const stepCards = document.querySelectorAll(".step-card");
+      const stepDetail = document.getElementById("step-detail");
+
+      const renderDetail = (key) => {
+        const data = stepContent[key];
+        if (!data) return;
+        stepDetail.innerHTML = `
+          <h3>${data.title}</h3>
+          <p>${data.intro}</p>
+          <ul>
+            ${data.bullets.map((item) => `<li><span></span>${item}</li>`).join("")}
+          </ul>
+        `;
+      };
+
+      stepCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          stepCards.forEach((el) => el.classList.remove("is-active"));
+          card.classList.add("is-active");
+          renderDetail(card.dataset.step);
+        });
+      });
+    </script>
   </body>
 </html>

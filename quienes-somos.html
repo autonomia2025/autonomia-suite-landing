@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quienes somos | AutonomIA Suite</title>
+    <meta
+      name="description"
+      content="Equipo profesional especializado en IA aplicada y desarrollo de software para operacion clinica." />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="styles/site.css" />
+    <style>
+      .page {
+        background: radial-gradient(circle at 75% 10%, rgba(31, 74, 124, 0.08), transparent 40%),
+          linear-gradient(180deg, #f9fbfe 0%, #ffffff 55%);
+      }
+
+      .hero {
+        padding: 40px 0 60px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 32px;
+        align-items: center;
+      }
+
+      .hero-card {
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(31, 74, 124, 0.16);
+        background: rgba(255, 255, 255, 0.96);
+        padding: 24px 26px;
+        box-shadow: var(--shadow-card);
+      }
+
+      .hero-card h3 {
+        color: var(--navy-900);
+        margin-bottom: 10px;
+      }
+
+      .hero-card p {
+        color: var(--graphite-500);
+      }
+
+      .statement {
+        font-size: 1.02rem;
+        color: var(--graphite-500);
+        margin-top: 16px;
+      }
+
+      .story {
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(31, 74, 124, 0.12);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 26px 28px;
+        box-shadow: 0 16px 34px rgba(13, 27, 42, 0.08);
+      }
+
+      .story p {
+        color: var(--graphite-500);
+        margin-top: 10px;
+      }
+
+      .anchor-quote {
+        margin-top: 16px;
+        padding: 14px 16px;
+        border-left: 3px solid rgba(31, 74, 124, 0.5);
+        background: rgba(31, 74, 124, 0.05);
+        color: var(--graphite-700);
+        font-weight: 600;
+      }
+
+      .focus-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 24px;
+      }
+
+      .focus-card {
+        border-radius: var(--radius-md);
+        border: 1px solid #e1e5ed;
+        background: var(--white);
+        padding: 20px;
+        box-shadow: 0 12px 26px rgba(13, 27, 42, 0.06);
+      }
+
+      .focus-card h4 {
+        color: var(--navy-900);
+        margin-bottom: 8px;
+      }
+
+      .focus-card p {
+        color: var(--graphite-500);
+      }
+
+      .anchor-line {
+        margin-top: 16px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+
+      .principles {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 22px;
+      }
+
+      .principle {
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(31, 74, 124, 0.14);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 18px;
+      }
+
+      .principle h4 {
+        color: var(--navy-900);
+        margin-bottom: 8px;
+      }
+
+      .principle p {
+        color: var(--graphite-500);
+      }
+
+
+      .cta-final {
+        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 55%);
+        padding-bottom: 90px;
+      }
+
+      .cta-card {
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        border: 1px solid #e1e6ef;
+        background: var(--white);
+        box-shadow: var(--shadow-card);
+      }
+
+      @media (max-width: 980px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .principles {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .focus-grid,
+        .principles {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="simple-page">
+    <div class="page">
+      <div class="header-wrapper">
+        <header class="nav">
+          <img class="brand-logo" src="assets/logo.png" alt="AutonomIA" />
+          <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="demo.html">Demo</a>
+            <a href="como-funciona.html">Como funciona</a>
+            <a href="impacto.html">Impacto</a>
+            <a href="quienes-somos.html">Quienes somos</a>
+          </nav>
+          <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
+        </header>
+      </div>
+
+      <section class="hero container">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">Autoridad tecnica</span>
+            <h1 class="title-gradient">
+              Equipo profesional especializado en IA y desarrollo de software para operacion
+              clinica
+            </h1>
+            <p class="statement">
+              Diseñamos sistemas confiables que automatizan atencion, agenda y decisiones operativas
+              sin perder control humano.
+            </p>
+            <div class="cta-actions" style="margin-top: 18px;">
+              <a class="btn btn-secondary" href="#como-trabajamos">Conocer como trabajamos</a>
+            </div>
+          </div>
+          <div class="hero-card">
+            <h3>IA como infraestructura operativa</h3>
+            <p>
+              La tecnologia se integra a la operacion clinica para sostener continuidad, trazabilidad
+              y control en cada contacto.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="container" id="origen">
+        <div class="story">
+          <h2 class="section-title title-gradient">
+            No partimos desde la tecnologia. Partimos desde el problema operativo.
+          </h2>
+          <p>
+            AutonomIA nace al observar el desgaste real en clinicas: WhatsApp saturado, agendas
+            desordenadas, falta de trazabilidad y decisiones improvisadas. La respuesta no era sumar
+            mas personas ni mas apps, sino diseñar sistemas bien construidos.
+          </p>
+          <div class="anchor-quote">No construimos prototipos. Construimos sistemas que deben operar todos los dias.</div>
+        </div>
+      </section>
+
+      <section class="container" id="como-trabajamos">
+        <h2 class="section-title title-gradient">Ingenieria antes que promesas</h2>
+        <p class="section-subtitle">
+          Nuestro enfoque prioriza continuidad operativa, control humano y confiabilidad.
+        </p>
+        <div class="focus-grid">
+          <div class="focus-card">
+            <h4>Software como infraestructura critica</h4>
+            <p>Los sistemas se diseñan para sostener operacion diaria, no para demos.</p>
+          </div>
+          <div class="focus-card">
+            <h4>IA aplicada con criterio</h4>
+            <p>Se utiliza solo donde aporta valor operativo y reduce friccion.</p>
+          </div>
+          <div class="focus-card">
+            <h4>Control humano y trazabilidad</h4>
+            <p>El equipo mantiene criterio y visibilidad de cada decision.</p>
+          </div>
+          <div class="focus-card">
+            <h4>Escalabilidad sin riesgo</h4>
+            <p>El sistema crece sin romper la operacion ni perder estabilidad.</p>
+          </div>
+        </div>
+        <div class="anchor-line">Ingenieria de software aplicada a la operacion clinica.</div>
+      </section>
+
+      <section class="container" id="principios">
+        <h2 class="section-title title-gradient">Principios de trabajo</h2>
+        <div class="principles">
+          <div class="principle">
+            <h4>Ingenieria responsable</h4>
+            <p>La IA no reemplaza criterio, lo apoya.</p>
+          </div>
+          <div class="principle">
+            <h4>Confiabilidad operativa</h4>
+            <p>El sistema debe responder siempre.</p>
+          </div>
+          <div class="principle">
+            <h4>Simplicidad para el equipo</h4>
+            <p>Interfaces claras y flujos faciles de operar.</p>
+          </div>
+          <div class="principle">
+            <h4>Implementacion real</h4>
+            <p>Trabajo aplicado, no experimental.</p>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="cta-final" id="cta-final">
+        <div class="container">
+          <div class="cta-card">
+            <h2 class="section-title title-gradient">IA aplicada con criterio profesional.</h2>
+            <p class="section-subtitle">
+              AutonomIA Suite no es una herramienta aislada; es un sistema operativo diseñado por
+              profesionales para clinicas que necesitan orden, continuidad y control.
+            </p>
+            <div class="cta-actions" style="margin-top: 18px;">
+              <a class="btn btn-primary" href="index.html#cta-final">Agendar una demo profesional</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="container footer">AutonomIA Suite · Software de gestion profesional</footer>
+    </div>
+  </body>
+</html>
