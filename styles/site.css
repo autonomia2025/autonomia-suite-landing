@@ -80,6 +80,23 @@ code {
   border: 1px solid rgba(31, 74, 124, 0.16);
   box-shadow: 0 18px 40px rgba(13, 27, 42, 0.08);
   backdrop-filter: blur(12px);
+  gap: 18px;
+}
+
+.simple-page .nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.simple-page .nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .simple-page .brand-logo {
@@ -91,6 +108,43 @@ code {
   gap: 18px;
   font-size: 0.92rem;
   color: var(--graphite-300);
+}
+
+.simple-page .nav-cta {
+  flex-shrink: 0;
+}
+
+.simple-page .nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 74, 124, 0.16);
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.simple-page .nav-toggle span,
+.simple-page .nav-toggle span::before,
+.simple-page .nav-toggle span::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--graphite-500);
+  position: relative;
+  content: "";
+}
+
+.simple-page .nav-toggle span::before {
+  position: absolute;
+  top: -6px;
+}
+
+.simple-page .nav-toggle span::after {
+  position: absolute;
+  top: 6px;
 }
 
 .simple-page .nav-links a {
@@ -229,9 +283,37 @@ code {
 @media (max-width: 720px) {
   .simple-page .nav {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: stretch;
+    gap: 10px;
     padding: 12px 16px;
+  }
+
+  .simple-page .nav-top {
+    width: 100%;
+    position: relative;
+  }
+
+  .simple-page .nav-toggle {
+    display: inline-flex;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .simple-page .nav-menu {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(31, 74, 124, 0.12);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .simple-page .nav.is-open .nav-menu {
+    display: flex;
   }
 
   .simple-page .nav-links {
@@ -239,6 +321,7 @@ code {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    color: var(--graphite-700);
   }
 
   .simple-page .nav-links a {
@@ -247,9 +330,14 @@ code {
     border-radius: 8px;
     background: rgba(31, 74, 124, 0.04);
     border: 1px solid rgba(31, 74, 124, 0.1);
+    color: var(--graphite-700);
   }
 
   .simple-page .btn {
+    width: 100%;
+  }
+
+  .simple-page .nav-cta {
     width: 100%;
   }
 }

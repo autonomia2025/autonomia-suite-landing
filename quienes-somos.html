@@ -164,16 +164,25 @@
   <body class="simple-page">
     <div class="page">
       <div class="header-wrapper">
-        <header class="nav">
-          <img class="brand-logo" src="assets/logo.png" alt="AutonomIA" />
-          <nav class="nav-links">
-            <a href="index.html">Inicio</a>
-            <a href="demo.html">Demo</a>
-            <a href="como-funciona.html">Como funciona</a>
-            <a href="impacto.html">Impacto</a>
-            <a href="quienes-somos.html">Quienes somos</a>
-          </nav>
-          <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
+        <header class="nav" id="site-header">
+          <div class="nav-top">
+            <img class="brand-logo" src="assets/logo.png" alt="AutonomIA" />
+            <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu">
+              <span></span>
+            </button>
+          </div>
+          <div class="nav-menu" id="nav-menu">
+            <nav class="nav-links" id="nav-links">
+              <a href="index.html">Inicio</a>
+              <a href="demo.html">Demo</a>
+              <a href="como-funciona.html">Como funciona</a>
+              <a href="impacto.html">Impacto</a>
+              <a href="quienes-somos.html">Quienes somos</a>
+            </nav>
+            <div class="nav-cta">
+              <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
+            </div>
+          </div>
         </header>
       </div>
 
@@ -283,5 +292,39 @@
 
       <footer class="container footer">AutonomIA Suite · Software de gestion profesional</footer>
     </div>
+    <script>
+      const header = document.getElementById("site-header");
+      const navToggle = document.getElementById("nav-toggle");
+      const navMenu = document.getElementById("nav-menu");
+      const navLinks = document.querySelectorAll("#nav-links a");
+
+      const closeMenu = () => {
+        header.classList.remove("is-open");
+        navToggle?.setAttribute("aria-expanded", "false");
+      };
+
+      navToggle?.addEventListener("click", () => {
+        header.classList.toggle("is-open");
+        const expanded = header.classList.contains("is-open");
+        navToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+      });
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth <= 720) {
+            closeMenu();
+          }
+        });
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!header.classList.contains("is-open")) return;
+        const target = event.target;
+        const clickedInsideMenu = navMenu?.contains(target) || navToggle?.contains(target);
+        if (!clickedInsideMenu) {
+          closeMenu();
+        }
+      });
+    </script>
   </body>
 </html>
