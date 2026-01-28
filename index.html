@@ -1842,7 +1842,7 @@
           <div class="form-panel reveal delay-1">
             <h3>Solicitar demo</h3>
             <p>Te contactamos en menos de 24 horas habiles.</p>
-            <form class="form" action="#" method="post">
+            <form class="form" id="lead-form" action="#" method="post">
               <label>
                 Nombre y apellido
                 <input type="text" name="nombre" placeholder="Ej: Camila Rojas" required />
@@ -1877,7 +1877,9 @@
                 Comentarios
                 <input type="text" name="comentarios" placeholder="Horario ideal, especialidades, etc." />
               </label>
+              <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
               <button class="btn btn-primary" type="submit">Quiero una demo</button>
+              <p class="microcopy" id="lead-form-status" style="margin-top: 12px;"></p>
             </form>
           </div>
         </div>
@@ -2265,6 +2267,66 @@
           closeMenu();
         }
       });
+
+      const leadForm = document.getElementById("lead-form");
+      if (leadForm) {
+        const leadStatus = document.getElementById("lead-form-status");
+        leadForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const form = event.target;
+          const params = new URLSearchParams(window.location.search);
+
+          const messageParts = [];
+          const ciudad = form.ciudad?.value?.trim();
+          const volumen = form.volumen?.value?.trim();
+          const comentarios = form.comentarios?.value?.trim();
+          if (ciudad) messageParts.push(`Ciudad: ${ciudad}`);
+          if (volumen) messageParts.push(`Volumen mensual: ${volumen}`);
+          if (comentarios) messageParts.push(`Comentarios: ${comentarios}`);
+
+          const payload = {
+            name: form.nombre.value,
+            email: form.email.value,
+            phone: form.whatsapp.value || null,
+            company: form.clinica.value || null,
+            industry: "healthcare",
+            message: messageParts.join("\n") || null,
+            website: form.website.value,
+            source: "landing",
+            utm_source: params.get("utm_source"),
+            utm_medium: params.get("utm_medium"),
+            utm_campaign: params.get("utm_campaign"),
+          };
+
+          if (leadStatus) {
+            leadStatus.textContent = "Enviando...";
+          }
+
+          try {
+            const res = await fetch("/api/lead", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            const result = await res.json();
+            if (res.ok) {
+              if (leadStatus) {
+                leadStatus.textContent = "Gracias. Te contactaremos en unos minutos.";
+              }
+              form.reset();
+            } else {
+              if (leadStatus) {
+                leadStatus.textContent = result.error || "No fue posible enviar el formulario.";
+              }
+            }
+          } catch (error) {
+            if (leadStatus) {
+              leadStatus.textContent = "Error de conexion. Intenta nuevamente.";
+            }
+          }
+        });
+      }
 
       const carouselControls = document.querySelectorAll("[data-carousel-controls]");
       carouselControls.forEach((controls) => {

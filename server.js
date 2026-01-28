@@ -7,6 +7,7 @@ import { WebSocketServer } from "ws";
 import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
+import nodemailer from "nodemailer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +29,19 @@ const openaiKey = process.env.OPENAI_API_KEY || "";
 const openaiChatModel = process.env.OPENAI_MODEL_CHAT || "gpt-4o-mini";
 const openaiAnalysisModel = process.env.OPENAI_MODEL_ANALYSIS || "gpt-4o-mini";
 const openai = openaiKey ? new OpenAI({ apiKey: openaiKey }) : null;
+
+const gmailUser = process.env.GMAIL_USER || "";
+const gmailAppPassword = process.env.GMAIL_APP_PASSWORD || "";
+const smtpReady = Boolean(gmailUser && gmailAppPassword);
+const mailTransporter = smtpReady
+  ? nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: gmailUser,
+        pass: gmailAppPassword,
+      },
+    })
+  : null;
 
 app.use(express.json({ limit: "32kb" }));
 app.use((req, res, next) => {
@@ -65,6 +79,45 @@ const sanitize = (value) =>
     .replace(/[<>]/g, "")
     .trim()
     .slice(0, 200);
+
+const sanitizeLong = (value, limit = 2000) =>
+  String(value || "")
+    .replace(/[<>]/g, "")
+    .trim()
+    .slice(0, limit);
+
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const buildLeadText = (payload) => {
+  const lines = [
+    `Nombre: ${payload.name || "—"}`,
+    `Email: ${payload.email || "—"}`,
+    `Telefono: ${payload.phone || "—"}`,
+    `Empresa: ${payload.company || "—"}`,
+    `Industria: ${payload.industry || "—"}`,
+    `Mensaje: ${payload.message || "—"}`,
+    `Source: ${payload.source || "—"}`,
+    `UTM Source: ${payload.utm_source || "—"}`,
+    `UTM Medium: ${payload.utm_medium || "—"}`,
+    `UTM Campaign: ${payload.utm_campaign || "—"}`,
+  ];
+  return lines.join("\n");
+};
+
+const buildAutoReplyText = () =>
+  "Hola,\n\n" +
+  "Gracias por contactarte con AutonomIA Suite.\n" +
+  "Hemos recibido correctamente tu solicitud de demo.\n\n" +
+  "Nuestro equipo revisara la informacion y se pondra en contacto contigo a la brevedad para coordinar una reunion 1:1, donde podremos mostrarte el sistema en funcionamiento y evaluar como se adapta a la operacion de tu clinica.\n\n" +
+  "Que puedes esperar de la demo?\n" +
+  "- Revision del flujo real de atencion y agenda\n" +
+  "- Ejemplo practico de como se ordena la operacion diaria\n" +
+  "- Espacio para resolver dudas tecnicas y operativas\n\n" +
+  "La demo es sin compromiso y esta pensada para que puedas evaluar con claridad si este sistema hace sentido para tu organizacion.\n\n" +
+  "Si necesitas agregar informacion o tienes alguna pregunta antes de la reunion, puedes responder directamente a este correo.\n\n" +
+  "Un saludo,\n\n" +
+  "Equipo AutonomIA Suite\n" +
+  "Software profesional para operacion clinica";
 
 const sanitizeForModel = (value) =>
   String(value || "")
@@ -352,6 +405,79 @@ app.post("/api/chat", rateLimit, async (req, res) => {
       captured: session.captured,
     },
   });
+});
+
+app.post("/api/lead", rateLimit, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const honeypot = sanitizeLong(body.website, 200);
+    if (honeypot) {
+      return res.json({ success: true });
+    }
+
+    const name = sanitize(body.name || body.nombre);
+    const email = sanitize(body.email);
+    const phone = sanitizeLong(body.phone || body.whatsapp, 200);
+    const company = sanitizeLong(body.company || body.clinica, 200);
+    const industry = sanitizeLong(body.industry, 120);
+    const message = sanitizeLong(body.message || body.comentarios, 2000);
+    const source = sanitizeLong(body.source, 120);
+    const utm_source = sanitizeLong(body.utm_source, 200);
+    const utm_medium = sanitizeLong(body.utm_medium, 200);
+    const utm_campaign = sanitizeLong(body.utm_campaign, 200);
+
+    if (!name || name.length < 2) {
+      return res.status(400).json({ success: false, error: "Nombre es requerido" });
+    }
+
+    if (!email || !isValidEmail(email)) {
+      return res.status(400).json({ success: false, error: "Email valido es requerido" });
+    }
+
+    if (!smtpReady || !mailTransporter) {
+      return res.status(500).json({ success: false, error: "SMTP no configurado" });
+    }
+
+    const leadPayload = {
+      name,
+      email,
+      phone,
+      company,
+      industry,
+      message,
+      source,
+      utm_source,
+      utm_medium,
+      utm_campaign,
+    };
+
+    const internalSubject = "Nuevo lead – AutonomIA Suite";
+    const autoReplySubject = "Confirmacion de solicitud de demo – AutonomIA Suite";
+
+    const internalText = buildLeadText(leadPayload);
+    const autoReplyText = buildAutoReplyText();
+
+    await Promise.all([
+      mailTransporter.sendMail({
+        from: `AutonomIA Suite <${gmailUser}>`,
+        to: "jtmenesesg@gmail.com",
+        subject: internalSubject,
+        text: internalText,
+        replyTo: email,
+      }),
+      mailTransporter.sendMail({
+        from: `AutonomIA Suite <${gmailUser}>`,
+        to: email,
+        subject: autoReplySubject,
+        text: autoReplyText,
+      }),
+    ]);
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error("Lead email error", error);
+    return res.status(500).json({ success: false, error: "No fue posible enviar" });
+  }
 });
 
 app.get("/api/sessions/:id", rateLimit, (req, res) => {
