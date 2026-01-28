@@ -1440,6 +1440,7 @@
           flex-direction: column;
           align-items: flex-start;
           gap: 8px;
+          color: var(--graphite-700);
         }
 
         .nav-links a {
@@ -1448,6 +1449,7 @@
           background: rgba(31, 74, 124, 0.04);
           border: 1px solid rgba(31, 74, 124, 0.1);
           font-size: 0.85rem;
+          color: var(--graphite-700);
         }
 
         .nav.is-open .nav-menu {
@@ -2233,6 +2235,7 @@
 
       const navMenu = document.getElementById("nav-menu");
       const navLinks = document.querySelectorAll("#nav-links a");
+      const navMenuLinks = document.querySelectorAll("#nav-menu a");
       const closeMenu = () => {
         header.classList.remove("is-open");
         navToggle?.setAttribute("aria-expanded", "false");
@@ -2246,11 +2249,19 @@
         });
       });
 
+      navMenuLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth <= 720) {
+            closeMenu();
+          }
+        });
+      });
+
       document.addEventListener("click", (event) => {
         if (!header.classList.contains("is-open")) return;
         const target = event.target;
-        const clickedInside = header.contains(target) || navToggle?.contains(target);
-        if (!clickedInside) {
+        const clickedInsideMenu = navMenu?.contains(target) || navToggle?.contains(target);
+        if (!clickedInsideMenu) {
           closeMenu();
         }
       });
