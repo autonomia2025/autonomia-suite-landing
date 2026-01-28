@@ -2311,6 +2311,15 @@
 
             const result = await res.json();
             if (res.ok) {
+              try {
+                await fetch("https://hblwddfcfiblesjcosjt.supabase.co/functions/v1/lead-capture", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(payload),
+                });
+              } catch (error) {
+                console.warn("Lead capture failed", error);
+              }
               if (leadStatus) {
                 leadStatus.textContent = "Gracias. Te contactaremos en unos minutos.";
               }
