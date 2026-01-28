@@ -40,6 +40,9 @@ const mailTransporter = smtpReady
         user: gmailUser,
         pass: gmailAppPassword,
       },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     })
   : null;
 
@@ -118,6 +121,14 @@ const buildAutoReplyText = () =>
   "Un saludo,\n\n" +
   "Equipo AutonomIA Suite\n" +
   "Software profesional para operacion clinica";
+
+const sendMailWithTimeout = (options, timeoutMs = 12000) =>
+  Promise.race([
+    mailTransporter.sendMail(options),
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("SMTP timeout")), timeoutMs);
+    }),
+  ]);
 
 const sanitizeForModel = (value) =>
   String(value || "")
@@ -458,14 +469,14 @@ app.post("/api/lead", rateLimit, async (req, res) => {
     const autoReplyText = buildAutoReplyText();
 
     await Promise.all([
-      mailTransporter.sendMail({
+      sendMailWithTimeout({
         from: `AutonomIA Suite <${gmailUser}>`,
         to: "jtmenesesg@gmail.com",
         subject: internalSubject,
         text: internalText,
         replyTo: email,
       }),
-      mailTransporter.sendMail({
+      sendMailWithTimeout({
         from: `AutonomIA Suite <${gmailUser}>`,
         to: email,
         subject: autoReplySubject,
