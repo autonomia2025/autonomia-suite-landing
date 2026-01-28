@@ -1559,6 +1559,36 @@
           padding: 10px 12px;
         }
       }
+
+      /* FIX: ningun mensaje puede agrandar el ancho del chat */
+      .chat-panel,
+      .chat-left,
+      .chat-window {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+      }
+
+      .chat-message {
+        min-width: 0 !important;
+        max-width: 90% !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+        white-space: pre-wrap !important;
+      }
+
+      .chat-message a {
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+      }
+
+      .chat-message pre,
+      .chat-message code {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
     </style>
   </head>
   <body>
