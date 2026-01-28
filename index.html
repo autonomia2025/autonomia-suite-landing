@@ -609,7 +609,7 @@
         gap: 16px;
         margin-top: 30px;
         max-width: 980px;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         margin-left: auto;
         margin-right: auto;
       }
@@ -626,25 +626,10 @@
         transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
           background 0.2s ease;
         text-align: center;
-        grid-column: span 2;
+        grid-column: span 1;
         flex-direction: column;
       }
 
-      .problem-item:nth-child(4),
-      .problem-item:nth-child(5) {
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        flex-direction: column;
-      }
-
-      .problem-item:nth-child(4) {
-        grid-column: 2 / span 2;
-      }
-
-      .problem-item:nth-child(5) {
-        grid-column: 4 / span 2;
-      }
 
       .problem-dot {
         width: 10px;
@@ -785,6 +770,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 24px;
         align-items: stretch;
+      }
+
+      .demo-split > .chat-panel {
+        min-width: 0;
       }
 
       .chat-panel {
@@ -963,6 +952,7 @@
       .clinic-panel {
         display: grid;
         gap: 14px;
+        min-width: 0;
       }
 
       .clinic-card {
@@ -970,12 +960,14 @@
         border: 1px solid rgba(31, 74, 124, 0.12);
         padding: 12px 14px;
         background: rgba(245, 248, 252, 0.8);
+        min-width: 0;
       }
 
       .clinic-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
+        min-width: 0;
       }
 
       .clinic-row {
@@ -1029,6 +1021,7 @@
         color: var(--graphite-700);
         margin-top: 6px;
         font-weight: 600;
+        word-break: break-word;
       }
 
       .clinic-card.is-highlight {
@@ -1612,14 +1605,14 @@
           </div>
           <div class="nav-menu" id="nav-menu">
             <div class="nav-links" id="nav-links">
-              <a href="#problemas">Problema operativo</a>
-              <a href="#como-funciona">Como funciona</a>
-              <a href="#beneficios">Impacto diario</a>
+              <a href="index.html">Inicio</a>
+              <a href="demo.html">Demo</a>
+              <a href="como-funciona.html">Como funciona</a>
+              <a href="impacto.html">Impacto</a>
             </div>
-            <div class="nav-cta">
-              <a class="btn btn-secondary" href="https://wa.me/XXXXXXXXXXX">Hablar por WhatsApp</a>
-              <a class="btn btn-primary" href="https://placeholder.demo">Agendar demo</a>
-            </div>
+          <div class="nav-cta">
+            <a class="btn btn-primary" href="https://placeholder.demo">Agendar demo</a>
+          </div>
           </div>
         </header>
       </div>
@@ -1641,7 +1634,6 @@
             </ul>
             <div class="hero-cta">
               <a class="btn btn-primary" href="https://placeholder.demo">Recuperar el control operativo en una demo</a>
-              <a class="btn btn-secondary" href="https://wa.me/XXXXXXXXXXX">Hablar por WhatsApp</a>
             </div>
             <p class="microcopy">Llamada 1:1 · Sin compromiso · Pensado para clinicas en Chile</p>
           </div>
@@ -1652,103 +1644,6 @@
               alt="Vista de operacion AutonomIA Suite"
               loading="lazy" />
             <div class="hero-caption">Vista real del panel operativo</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="chat-demo" id="demo-real">
-        <div class="container">
-          <div class="chat-demo-grid">
-            <div class="reveal" style="text-align: center;">
-              <span class="demo-eyebrow">Demo funcional en vivo</span>
-              <h2 class="section-title title-gradient">Demo real</h2>
-              <p class="section-subtitle" style="text-align: center; margin: 0 auto;">
-                El paciente conversa. La clinica recibe contexto y prioridad.
-              </p>
-              <p class="microcopy" style="text-align: center; margin-top: 8px;">
-                Califica a tus pacientes con IA y recopila datos clave desde el primer contacto.
-              </p>
-            </div>
-            <div class="demo-card reveal">
-              <div class="demo-split">
-                <div class="chat-panel">
-                  <div class="chat-header">
-                    <div>
-                      <div class="chat-title">Conversacion (cliente)</div>
-                      <div class="chat-subtitle">Conversacion real con la recepcion digital</div>
-                    </div>
-                    <button class="mini-reset" id="chat-reset" type="button">↻ Reiniciar</button>
-                  </div>
-                  <div class="chat-banner" id="chat-banner">Backend no disponible.</div>
-                  <div class="chat-left">
-                    <div class="chat-window" id="chat-window"></div>
-                  <div class="typing-indicator" id="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span>Escribiendo</span>
-                  </div>
-                  <form class="chat-input" id="chat-form">
-                    <input
-                      id="chat-input"
-                      type="text"
-                      placeholder="Escriba su mensaje"
-                      autocomplete="off"
-                      disabled />
-                    <button class="btn btn-primary" type="submit">Enviar</button>
-                  </form>
-                  </div>
-                </div>
-                <div class="chat-panel">
-                  <div class="chat-header">
-                    <div>
-                      <div class="chat-title">Ficha operativa (clinica)</div>
-                      <div class="chat-subtitle">Informacion y prioridad en tiempo real</div>
-                    </div>
-                  </div>
-                  <div class="clinic-grid" id="clinic-panel">
-                    <div class="clinic-card" id="card-name">
-                      <div class="clinic-label">Nombre</div>
-                      <div class="clinic-value" id="clinic-name">—</div>
-                    </div>
-                    <div class="clinic-card" id="card-reason">
-                      <div class="clinic-label">Motivo</div>
-                      <div class="clinic-value" id="clinic-reason">—</div>
-                    </div>
-                    <div class="clinic-card" id="card-city">
-                      <div class="clinic-label">Ciudad</div>
-                      <div class="clinic-value" id="clinic-city">—</div>
-                    </div>
-                    <div class="clinic-card" id="card-preference">
-                      <div class="clinic-label">Preferencia horaria</div>
-                      <div class="clinic-value" id="clinic-preference">—</div>
-                    </div>
-                    <div class="clinic-card" id="card-status">
-                      <div class="clinic-row">
-                        <div>
-                          <div class="clinic-label">Tipo de contacto</div>
-                          <div class="clinic-value" id="clinic-status">—</div>
-                        </div>
-                        <span class="clinic-badge is-low" id="clinic-label">—</span>
-                      </div>
-                    </div>
-                    <div class="clinic-card" id="card-priority">
-                      <div class="clinic-row">
-                        <div>
-                          <div class="clinic-label">Prioridad</div>
-                          <div class="clinic-value" id="clinic-priority">—</div>
-                        </div>
-                        <span class="clinic-badge is-low" id="clinic-priority-badge">—</span>
-                      </div>
-                    </div>
-                    <div class="clinic-card" id="card-action" style="grid-column: span 2;">
-                      <div class="clinic-label">Accion sugerida</div>
-                      <div class="clinic-value" id="clinic-action">—</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -1839,70 +1734,6 @@
         </div>
       </section>
 
-      <section class="muted-section" id="como-funciona">
-        <div class="container">
-          <h2 class="section-title title-gradient reveal">Simple desde el primer dia</h2>
-          <p class="section-subtitle reveal delay-1">
-            Tres pasos claros y sin lenguaje tecnico. Tu equipo sigue atendiendo como siempre, con
-            una recepcion digital que opera 24/7.
-          </p>
-          <div class="steps">
-            <div class="step reveal">
-              <span>1</span>
-              <h4>Conectamos tus canales</h4>
-              <p>WhatsApp y web quedan listos sin cambios complejos.</p>
-            </div>
-            <div class="step reveal delay-1">
-              <span>2</span>
-              <h4>Definimos tus respuestas y agenda</h4>
-              <p>Se carga la informacion clave para atender y agendar de forma clara.</p>
-            </div>
-            <div class="step reveal delay-2">
-              <span>3</span>
-              <h4>La Recepcionista Digital opera 24/7</h4>
-              <p>Responde, agenda y deriva solo cuando corresponde.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="beneficios">
-        <div class="container">
-          <h2 class="section-title title-gradient reveal">Decisiones operativas que hoy recaen en tu equipo</h2>
-          <ul class="benefits" data-carousel="decisions">
-            <li class="reveal">
-              <span></span>
-              <div>
-                <strong>Decide cuando una conversacion requiere intervencion humana.</strong>
-              </div>
-            </li>
-            <li class="reveal delay-1">
-              <span></span>
-              <div>
-                <strong>Decide que contactos tienen prioridad operativa.</strong>
-              </div>
-            </li>
-            <li class="reveal delay-2">
-              <span></span>
-              <div>
-                <strong>Decide que citas deben confirmarse de forma oportuna.</strong>
-              </div>
-            </li>
-            <li class="reveal delay-3">
-              <span></span>
-              <div>
-                <strong>Decide que informacion queda registrada para control gerencial.</strong>
-              </div>
-            </li>
-          </ul>
-          <div class="carousel-controls" data-carousel-controls="decisions">
-            <button class="carousel-btn" type="button" data-dir="prev">←</button>
-            <button class="carousel-btn" type="button" data-dir="next">→</button>
-          </div>
-          <p class="microcopy">Esto ocurre mientras tu equipo trabaja en otra cosa.</p>
-        </div>
-      </section>
-
 
       <section id="onboarding">
         <div class="container white-glove">
@@ -1943,66 +1774,6 @@
         </div>
       </section>
 
-      <section class="form-section" id="demo">
-        <div class="container form-shell">
-          <div class="reveal">
-            <span class="eyebrow">Agenda demo 1:1</span>
-            <h2 class="section-title title-gradient">Conoce AutonomIA Suite con tu equipo</h2>
-            <p class="section-subtitle">
-              Te mostramos el flujo completo y como se integra a tu operacion actual, sin
-              interrumpir tu dia a dia.
-            </p>
-            <div class="problem-list">
-              <div class="problem-item"><span></span>Diagnostico de carga operativa actual</div>
-              <div class="problem-item"><span></span>Ejemplo real de agenda y confirmaciones</div>
-              <div class="problem-item"><span></span>Propuesta de continuidad operativa</div>
-            </div>
-          </div>
-          <div class="form-panel reveal delay-1">
-            <h3>Solicita una demo 1:1</h3>
-            <p>Agenda una conversacion guiada con nuestro equipo comercial.</p>
-            <form class="form">
-              <label>
-                Nombre y apellido
-                <input type="text" placeholder="Ej: Camila Perez" />
-              </label>
-              <label>
-                Clinica
-                <input type="text" placeholder="Ej: Clinica Santa Maria" />
-              </label>
-              <label>
-                Cargo
-                <input type="text" placeholder="Ej: Administradora" />
-              </label>
-              <label>
-                Telefono
-                <input type="tel" placeholder="Ej: +56 9 1234 5678" />
-              </label>
-              <label>
-                Email
-                <input type="email" placeholder="Ej: nombre@clinica.cl" />
-              </label>
-              <label>
-                Ciudad
-                <input type="text" placeholder="Ej: Santiago" />
-              </label>
-              <label>
-                Volumen aprox. de mensajes/mes (opcional)
-                <select>
-                  <option value="">Selecciona una opcion</option>
-                  <option value="hasta-500">Hasta 500</option>
-                  <option value="500-1500">500 a 1.500</option>
-                  <option value="1500-3000">1.500 a 3.000</option>
-                  <option value="mas-3000">Mas de 3.000</option>
-                </select>
-              </label>
-              <button class="btn btn-primary" type="submit">Recuperar el control operativo en una demo</button>
-            </form>
-            <p class="microcopy">Respuesta comercial en horario habil · Sin compromiso</p>
-          </div>
-        </div>
-      </section>
-
       <section class="muted-section">
         <div class="container">
           <h2 class="section-title title-gradient reveal">Resolvemos las dudas mas comunes</h2>
@@ -2019,10 +1790,6 @@
               <h4>¿Es complejo de implementar?</h4>
               <p>No. La configuracion la realiza nuestro equipo y queda lista para usar.</p>
             </div>
-            <div class="faq-item reveal delay-3">
-              <h4>¿Que pasa si falla?</h4>
-              <p>Contamos con soporte y monitoreo para asegurar continuidad operativa.</p>
-            </div>
           </div>
         </div>
       </section>
@@ -2036,7 +1803,6 @@
             </p>
             <div class="cta-actions">
               <a class="btn btn-primary" href="https://placeholder.demo">Recuperar el control operativo en una demo</a>
-              <a class="btn btn-secondary" href="https://wa.me/XXXXXXXXXXX">Hablar por WhatsApp</a>
             </div>
             <p class="microcopy">Atencion comercial en horario habil · Sin compromiso</p>
           </div>
@@ -2090,6 +1856,7 @@
         });
       });
 
+      if (document.getElementById("chat-window")) {
       const chatWindow = document.getElementById("chat-window");
       const chatReset = document.getElementById("chat-reset");
       const typingIndicator = document.getElementById("typing-indicator");
@@ -2365,6 +2132,7 @@
           { threshold: 0.35 }
         );
         chatObserver.observe(chatSection);
+      }
       }
 
       const navToggle = document.getElementById("nav-toggle");

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Impacto | AutonomIA Suite</title>
+    <meta
+      name="description"
+      content="Impacto operativo de AutonomIA Suite: menos perdida, mas continuidad y mejor control." />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="styles/site.css" />
+    <style>
+      .page {
+        background: radial-gradient(circle at 80% 0%, rgba(31, 74, 124, 0.09), transparent 40%),
+          linear-gradient(180deg, #f9fbfe 0%, #ffffff 55%);
+      }
+
+      .impact-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 24px;
+      }
+
+      .impact-card {
+        border-radius: var(--radius-md);
+        border: 1px solid #e1e5ed;
+        background: var(--white);
+        padding: 22px;
+        box-shadow: 0 14px 30px rgba(13, 27, 42, 0.07);
+      }
+
+      .impact-card strong {
+        display: block;
+        color: var(--navy-900);
+        font-size: 1.1rem;
+        margin-bottom: 6px;
+      }
+
+      .impact-card span {
+        color: var(--graphite-300);
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .impact-card p {
+        color: var(--graphite-500);
+        margin-top: 10px;
+      }
+
+      @media (max-width: 980px) {
+        .impact-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="simple-page">
+    <div class="page">
+      <div class="header-wrapper">
+        <header class="nav">
+          <img class="brand-logo" src="assets/logo.png" alt="AutonomIA" />
+          <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="demo.html">Demo</a>
+            <a href="como-funciona.html">Como funciona</a>
+            <a href="impacto.html">Impacto</a>
+          </nav>
+          <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
+        </header>
+      </div>
+
+      <section class="hero container">
+        <span class="eyebrow">Impacto operativo</span>
+        <h1 class="title-gradient">Menos perdida, mas control, mejor continuidad</h1>
+        <p>
+          La recepcion digital ordena la demanda y evita que la operacion se desborde. El impacto se
+          ve en menos ausencias, mas horas clinicas protegidas y un ritmo sostenido.
+        </p>
+      </section>
+
+      <section class="container">
+        <h2 class="section-title title-gradient">Resultados esperados</h2>
+        <p class="section-subtitle">
+          Indicadores que muestran el cambio en la operacion y la experiencia de pacientes.
+        </p>
+        <div class="impact-grid">
+          <div class="impact-card">
+            <span>Continuidad</span>
+            <strong>Respuestas 24/7</strong>
+            <p>Se elimina el vacio fuera de horario y se mantiene la demanda activa.</p>
+          </div>
+          <div class="impact-card">
+            <span>Operatividad</span>
+            <strong>Menos friccion interna</strong>
+            <p>El equipo recibe solo los casos que requieren intervencion real.</p>
+          </div>
+          <div class="impact-card">
+            <span>Trazabilidad</span>
+            <strong>Visibilidad completa</strong>
+            <p>Timeline y estado del paciente disponibles en todo momento.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta">
+        <div class="container">
+          <div class="cta-card">
+            <h2 class="section-title title-gradient">Queres ver el impacto en tu clinica</h2>
+            <p class="section-subtitle">
+              Revisamos volumen, horarios y objetivos para estimar el beneficio esperado.
+            </p>
+            <div style="margin-top: 18px;">
+              <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="container footer">AutonomIA Suite · Software de gestion profesional</footer>
+    </div>
+  </body>
+</html>

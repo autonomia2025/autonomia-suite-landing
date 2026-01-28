@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Como funciona | AutonomIA Suite</title>
+    <meta
+      name="description"
+      content="Como funciona AutonomIA Suite: captura, triage y continuidad para la recepcion clinica." />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="styles/site.css" />
+    <style>
+      .page {
+        background: radial-gradient(circle at 20% 0%, rgba(31, 74, 124, 0.09), transparent 40%),
+          linear-gradient(180deg, #f9fbfe 0%, #ffffff 55%);
+      }
+
+      .flow-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin-top: 24px;
+      }
+
+      .flow-card {
+        border-radius: var(--radius-md);
+        border: 1px solid #e1e5ed;
+        background: var(--white);
+        padding: 22px;
+        box-shadow: 0 14px 30px rgba(13, 27, 42, 0.07);
+      }
+
+      .flow-card h4 {
+        color: var(--navy-900);
+        margin-bottom: 10px;
+      }
+
+      .flow-card p {
+        color: var(--graphite-500);
+      }
+
+      @media (max-width: 980px) {
+        .flow-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="simple-page">
+    <div class="page">
+      <div class="header-wrapper">
+        <header class="nav">
+          <img class="brand-logo" src="assets/logo.png" alt="AutonomIA" />
+          <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="demo.html">Demo</a>
+            <a href="como-funciona.html">Como funciona</a>
+            <a href="impacto.html">Impacto</a>
+          </nav>
+          <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
+        </header>
+      </div>
+
+      <section class="hero container">
+        <span class="eyebrow">Metodo operativo</span>
+        <h1 class="title-gradient">Orden, prioridad y continuidad en cada contacto</h1>
+        <p>
+          AutonomIA Suite no solo responde. Captura la informacion critica, clasifica la urgencia y
+          mantiene trazabilidad para que tu equipo actue con claridad.
+        </p>
+      </section>
+
+      <section class="container">
+        <h2 class="section-title title-gradient">El flujo, paso a paso</h2>
+        <p class="section-subtitle">
+          Cada interaccion pasa por un esquema simple: capturar, priorizar, resolver o derivar.
+        </p>
+        <div class="flow-grid">
+          <div class="flow-card">
+            <h4>1. Captura dirigida</h4>
+            <p>Recolecta motivo, ciudad y preferencia horaria sin friccion.</p>
+          </div>
+          <div class="flow-card">
+            <h4>2. Clasificacion clinica</h4>
+            <p>Identifica prioridad y tipo de solicitud para evitar saturacion.</p>
+          </div>
+          <div class="flow-card">
+            <h4>3. Accion sugerida</h4>
+            <p>Define si se resuelve automaticamente o si el equipo interviene.</p>
+          </div>
+          <div class="flow-card">
+            <h4>4. Trazabilidad</h4>
+            <p>Registra eventos y estados para mantener control operativo.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta">
+        <div class="container">
+          <div class="cta-card">
+            <h2 class="section-title title-gradient">Listo para ver el flujo aplicado</h2>
+            <p class="section-subtitle">
+              Coordinamos una demo y adaptamos el flujo a tu operacion clinica real.
+            </p>
+            <div style="margin-top: 18px;">
+              <a class="btn btn-primary" href="index.html#cta-final">Agendar demo</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="container footer">AutonomIA Suite · Software de gestion profesional</footer>
+    </div>
+  </body>
+</html>

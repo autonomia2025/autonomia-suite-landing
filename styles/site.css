@@ -1,0 +1,215 @@
+:root {
+  color-scheme: only light;
+  --navy-900: #0d1b2a;
+  --graphite-700: #2a2f3a;
+  --graphite-500: #4c5566;
+  --graphite-300: #9aa3b2;
+  --graphite-100: #f4f6f9;
+  --white: #ffffff;
+  --accent: #1f4a7c;
+  --accent-strong: #235aa3;
+  --accent-soft: rgba(31, 74, 124, 0.12);
+  --title-gradient: linear-gradient(110deg, #102f52 0%, #1b4371 60%, #20508a 100%);
+  --shadow-card: 0 18px 40px rgba(13, 27, 42, 0.1);
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --max-width: 1100px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  background: var(--white);
+  color: var(--graphite-700);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  font-size: 0.95em;
+  background: var(--graphite-100);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.simple-page .page {
+  padding-top: 110px;
+}
+
+.simple-page .container {
+  width: min(92vw, var(--max-width));
+  margin: 0 auto;
+}
+
+.simple-page .header-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: 14px 0;
+}
+
+.simple-page .nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 22px;
+  width: min(94vw, var(--max-width));
+  margin: 0 auto;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(31, 74, 124, 0.16);
+  box-shadow: 0 18px 40px rgba(13, 27, 42, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.simple-page .brand-logo {
+  height: 64px;
+}
+
+.simple-page .nav-links {
+  display: flex;
+  gap: 18px;
+  font-size: 0.92rem;
+  color: var(--graphite-300);
+}
+
+.simple-page .nav-links a {
+  padding: 6px 4px;
+  border-bottom: 2px solid transparent;
+}
+
+.simple-page .nav-links a:hover {
+  color: var(--accent);
+  border-bottom-color: rgba(31, 74, 124, 0.4);
+}
+
+.simple-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.simple-page .btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: var(--white);
+  box-shadow: var(--shadow-card);
+}
+
+.simple-page .btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.simple-page .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.simple-page .title-gradient {
+  background: var(--title-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.simple-page .hero {
+  padding: 40px 0 60px;
+}
+
+.simple-page .hero h1 {
+  font-size: clamp(2.2rem, 3vw, 3rem);
+  line-height: 1.15;
+  color: var(--navy-900);
+  margin: 16px 0;
+}
+
+.simple-page .hero p {
+  color: var(--graphite-500);
+  font-size: 1.05rem;
+  max-width: 720px;
+}
+
+.simple-page section {
+  padding: 70px 0;
+}
+
+.simple-page .section-title {
+  font-size: clamp(1.9rem, 2.5vw, 2.4rem);
+  color: var(--navy-900);
+  margin-bottom: 14px;
+}
+
+.simple-page .section-subtitle {
+  color: var(--graphite-500);
+  font-size: 1.02rem;
+  max-width: 700px;
+}
+
+.simple-page .cta {
+  background: var(--graphite-100);
+}
+
+.simple-page .cta-card {
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  border: 1px solid #e1e6ef;
+  background: var(--white);
+  box-shadow: var(--shadow-card);
+}
+
+.simple-page .footer {
+  padding: 24px 0 50px;
+  color: var(--graphite-300);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 980px) {
+  .simple-page .nav {
+    flex-wrap: wrap;
+    gap: 10px;
+    border-radius: 16px;
+    padding: 10px 16px;
+  }
+
+  .simple-page .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .simple-page .brand-logo {
+    height: 54px;
+  }
+}
