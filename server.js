@@ -8,6 +8,7 @@ import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 import nodemailer from "nodemailer";
+import dns from "dns/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,14 +36,19 @@ const gmailAppPassword = process.env.GMAIL_APP_PASSWORD || "";
 const smtpReady = Boolean(gmailUser && gmailAppPassword);
 const mailTransporter = smtpReady
   ? nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
       auth: {
         user: gmailUser,
         pass: gmailAppPassword,
       },
+      tls: { minVersion: "TLSv1.2" },
       connectionTimeout: 10000,
       greetingTimeout: 10000,
-      socketTimeout: 15000,
+      socketTimeout: 10000,
+      logger: true,
+      debug: true,
     })
   : null;
 
@@ -446,7 +452,8 @@ app.post("/api/lead", rateLimit, async (req, res) => {
     }
 
     if (!smtpReady || !mailTransporter) {
-      return res.status(500).json({ success: false, error: "SMTP no configurado" });
+      console.warn("SMTP not configured", { hasUser: Boolean(gmailUser), hasPass: Boolean(gmailAppPassword) });
+      return res.status(502).json({ success: false, error: "EMAIL_DELIVERY_FAILED" });
     }
 
     const leadPayload = {
@@ -486,8 +493,26 @@ app.post("/api/lead", rateLimit, async (req, res) => {
 
     return res.json({ success: true });
   } catch (error) {
-    console.error("Lead email error", error);
-    return res.status(500).json({ success: false, error: "No fue posible enviar" });
+    console.error("Lead email error", {
+      message: error?.message || String(error),
+      code: error?.code,
+      command: error?.command,
+    });
+    return res.status(502).json({ success: false, error: "EMAIL_DELIVERY_FAILED" });
+  }
+});
+
+app.get("/debug/smtp", async (req, res) => {
+  const token = req.headers["x-debug-token"];
+  if (process.env.NODE_ENV === "production" && token !== process.env.DEBUG_TOKEN) {
+    return res.status(404).json({ error: "Not found" });
+  }
+  try {
+    const addresses = await dns.resolve4("smtp.gmail.com");
+    res.json({ host: "smtp.gmail.com", addresses });
+  } catch (error) {
+    console.error("SMTP DNS error", error?.message || error);
+    res.status(500).json({ error: "DNS_LOOKUP_FAILED" });
   }
 });
 
