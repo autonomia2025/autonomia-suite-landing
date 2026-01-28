@@ -7,7 +7,6 @@ import { WebSocketServer } from "ws";
 import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
-import nodemailer from "nodemailer";
 import dns from "dns/promises";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -31,26 +30,14 @@ const openaiChatModel = process.env.OPENAI_MODEL_CHAT || "gpt-4o-mini";
 const openaiAnalysisModel = process.env.OPENAI_MODEL_ANALYSIS || "gpt-4o-mini";
 const openai = openaiKey ? new OpenAI({ apiKey: openaiKey }) : null;
 
-const gmailUser = process.env.GMAIL_USER || "";
-const gmailAppPassword = process.env.GMAIL_APP_PASSWORD || "";
-const smtpReady = Boolean(gmailUser && gmailAppPassword);
-const mailTransporter = smtpReady
-  ? nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: gmailUser,
-        pass: gmailAppPassword,
-      },
-      tls: { minVersion: "TLSv1.2" },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
-      logger: true,
-      debug: true,
-    })
-  : null;
+const gmailSender = process.env.GMAIL_SENDER || "";
+const gmailClientId = process.env.GOOGLE_CLIENT_ID || "";
+const gmailClientSecret = process.env.GOOGLE_CLIENT_SECRET || "";
+const gmailRefreshToken = process.env.GOOGLE_REFRESH_TOKEN || "";
+
+const gmailOAuthReady = Boolean(
+  gmailSender && gmailClientId && gmailClientSecret && gmailRefreshToken
+);
 
 app.use(express.json({ limit: "32kb" }));
 app.use((req, res, next) => {
@@ -128,13 +115,87 @@ const buildAutoReplyText = () =>
   "Equipo AutonomIA Suite\n" +
   "Software profesional para operacion clinica";
 
-const sendMailWithTimeout = (options, timeoutMs = 12000) =>
-  Promise.race([
-    mailTransporter.sendMail(options),
-    new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("SMTP timeout")), timeoutMs);
-    }),
-  ]);
+const base64UrlEncode = (value) =>
+  Buffer.from(value)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+
+const createMimeMessage = ({ to, from, subject, text, replyTo }) => {
+  const headers = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+  ];
+  if (replyTo) {
+    headers.push(`Reply-To: ${replyTo}`);
+  }
+  return `${headers.join("\r\n")}\r\n\r\n${text}`;
+};
+
+const fetchAccessToken = async (timeoutMs = 12000) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: gmailClientId,
+        client_secret: gmailClientSecret,
+        refresh_token: gmailRefreshToken,
+        grant_type: "refresh_token",
+      }),
+      signal: controller.signal,
+    });
+
+    const result = await response.json();
+    if (!response.ok || !result.access_token) {
+      throw new Error(result?.error_description || "Failed to refresh token");
+    }
+    return result.access_token;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+const sendGmailWithTimeout = async ({ to, subject, text, replyTo }, timeoutMs = 12000) => {
+  const accessToken = await fetchAccessToken(timeoutMs);
+  const raw = base64UrlEncode(
+    createMimeMessage({
+      to,
+      from: `AutonomIA Suite <${gmailSender}>`,
+      subject,
+      text,
+      replyTo,
+    })
+  );
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ raw }),
+      signal: controller.signal,
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result?.error?.message || "Gmail send failed");
+    }
+    return result;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
 
 const sanitizeForModel = (value) =>
   String(value || "")
@@ -451,8 +512,13 @@ app.post("/api/lead", rateLimit, async (req, res) => {
       return res.status(400).json({ success: false, error: "Email valido es requerido" });
     }
 
-    if (!smtpReady || !mailTransporter) {
-      console.warn("SMTP not configured", { hasUser: Boolean(gmailUser), hasPass: Boolean(gmailAppPassword) });
+    if (!gmailOAuthReady) {
+      console.warn("Gmail OAuth not configured", {
+        hasSender: Boolean(gmailSender),
+        hasClientId: Boolean(gmailClientId),
+        hasClientSecret: Boolean(gmailClientSecret),
+        hasRefreshToken: Boolean(gmailRefreshToken),
+      });
       return res.status(502).json({ success: false, error: "EMAIL_DELIVERY_FAILED" });
     }
 
@@ -476,15 +542,13 @@ app.post("/api/lead", rateLimit, async (req, res) => {
     const autoReplyText = buildAutoReplyText();
 
     await Promise.all([
-      sendMailWithTimeout({
-        from: `AutonomIA Suite <${gmailUser}>`,
+      sendGmailWithTimeout({
         to: "jtmenesesg@gmail.com",
         subject: internalSubject,
         text: internalText,
         replyTo: email,
       }),
-      sendMailWithTimeout({
-        from: `AutonomIA Suite <${gmailUser}>`,
+      sendGmailWithTimeout({
         to: email,
         subject: autoReplySubject,
         text: autoReplyText,
@@ -497,6 +561,7 @@ app.post("/api/lead", rateLimit, async (req, res) => {
       message: error?.message || String(error),
       code: error?.code,
       command: error?.command,
+      provider: "gmail_oauth",
     });
     return res.status(502).json({ success: false, error: "EMAIL_DELIVERY_FAILED" });
   }
